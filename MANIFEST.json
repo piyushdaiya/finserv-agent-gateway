@@ -1,0 +1,258 @@
+{
+  "schema_version": "finserv-design-manifest/v1",
+  "product": "FinServ Agent Gateway",
+  "baseline": "v0.1",
+  "scope": "use-case-agnostic product design and contracts",
+  "files": [
+    {
+      "path": "LICENSE-NOTE.md",
+      "sha256": "23766de463a563904ac6e12b00b1f1311bca6d07034b29eec0e3fb61b27f3b53",
+      "bytes": 196
+    },
+    {
+      "path": "README.md",
+      "sha256": "e486054d6e313f76aa09f96d646e078f7f7c2f7585fe21384a415777a965b13a",
+      "bytes": 6208
+    },
+    {
+      "path": "api/openapi.yaml",
+      "sha256": "b1eed370125758cb110d6fa8e586e10dbf951c751df5514a1f09be7c283866f3",
+      "bytes": 4575
+    },
+    {
+      "path": "config/example.env",
+      "sha256": "7a179fd88b95fb47f039028d3de25ef175da837048c375681b54e4398adece7b",
+      "bytes": 207
+    },
+    {
+      "path": "docs/00-DESIGN-BASELINE-INDEX.md",
+      "sha256": "7373ed16918d841c4b7c26d8a2bee06a91690953b54512362a59a895c1144be2",
+      "bytes": 2795
+    },
+    {
+      "path": "docs/01-PRODUCT-CHARTER.md",
+      "sha256": "74c9db28b6defe78f40e7b053fc578eb83463954f7163c8fb62de9f763f7f987",
+      "bytes": 3230
+    },
+    {
+      "path": "docs/02-ARCHITECTURE.md",
+      "sha256": "03e6d073679ed3fd5e276682fc8daae60b990c8cc605bd5895bc3ad61f256d5d",
+      "bytes": 6450
+    },
+    {
+      "path": "docs/03-SECURITY-AND-TRUST-BOUNDARIES.md",
+      "sha256": "5bdb66d4b162ea645401423e7bd426c6ac3347988191e109b17a0e20d30a0e70",
+      "bytes": 6088
+    },
+    {
+      "path": "docs/04-ACTIONS-GRANTS-POLICY-AND-APPROVALS.md",
+      "sha256": "d2f0e88a5adbf4b77a6aa1ccd24b4f47bbf9ec7f194f89948cf7a388f5579504",
+      "bytes": 3947
+    },
+    {
+      "path": "docs/05-AUDIT-EVIDENCE-AND-REPLAY.md",
+      "sha256": "cabfd594ca40327d3c47809cd0918dc7104e06e6d6a9752ae729c1db36c8a658",
+      "bytes": 3164
+    },
+    {
+      "path": "docs/06-WORKFLOW-PACK-AND-ADAPTER-MODEL.md",
+      "sha256": "754b2183200c69ca6065512d1574fabc22bc8a1aec7484fd82d1bf3dbcf0e27e",
+      "bytes": 3471
+    },
+    {
+      "path": "docs/07-API-CONTRACT.md",
+      "sha256": "63ca034c75186fd7283d394758343636dbf3541aa139f8412bc3a6823f6e23b3",
+      "bytes": 2115
+    },
+    {
+      "path": "docs/08-STORAGE-AND-DATA-MODEL.md",
+      "sha256": "39020f6672b79fa7b111c4f899d12a36381f6c691114d993543d7c93c793cda6",
+      "bytes": 3360
+    },
+    {
+      "path": "docs/09-TEST-AND-ACCEPTANCE.md",
+      "sha256": "dfae9828310eebad5bbe824d281705766e90fbd2294baab587a73590869de08b",
+      "bytes": 2721
+    },
+    {
+      "path": "docs/10-OSS-VS-ENTERPRISE.md",
+      "sha256": "f435794b4347a3f4b63930e7b0c202b6ed4b27e0b0f3a547e1f12bf9c858cfc2",
+      "bytes": 1706
+    },
+    {
+      "path": "docs/11-ROADMAP.md",
+      "sha256": "61c00e6475e8523b4080b649fb33fe3fb9ddcc2e18cf88c1aebc862ea09026a8",
+      "bytes": 2079
+    },
+    {
+      "path": "docs/12-EXTERNAL-DESIGN-LEARNINGS.md",
+      "sha256": "f790eaa93f530aed6d1bb628f7b161084d3b9b58d4e91403455d7042969231dd",
+      "bytes": 2259
+    },
+    {
+      "path": "docs/13-ASSUMPTIONS-AND-NON-ASSUMPTIONS.md",
+      "sha256": "55f26ce5056400e148b7aaf49c3a1b165c778c060d4d6d0d6451f240c98934e1",
+      "bytes": 1374
+    },
+    {
+      "path": "docs/14-IMPLEMENTATION-BLUEPRINT.md",
+      "sha256": "e39765652dd4dd3ada47c3ffe6a6dae7f52d0c6a191005d86077e0a747f7148a",
+      "bytes": 2525
+    },
+    {
+      "path": "docs/15-ERROR-AND-REASON-CODES.md",
+      "sha256": "bf0c7acdb86c282aaa57186cc52a9c6296055239b82c24f8288637f27225beb7",
+      "bytes": 2072
+    },
+    {
+      "path": "docs/16-REPOSITORY-AND-PROJECT-BOUNDARY.md",
+      "sha256": "5497466df4f06a66f9b4dfb06690255982e7216d940e9099195662096ef1f25e",
+      "bytes": 1526
+    },
+    {
+      "path": "docs/17-FUTURE-WORKFLOW-SELECTION.md",
+      "sha256": "d88c02c6c0b56fd1335a792a3e2a5751019baec06f5898cdaf75cca0ea2d18c4",
+      "bytes": 2145
+    },
+    {
+      "path": "docs/adr/0001-product-identity-and-independence.md",
+      "sha256": "4ace06a7e0d3c5301e4ddb9fce02daf444316d0f4823e7556f2ddcc1554f6cae",
+      "bytes": 384
+    },
+    {
+      "path": "docs/adr/0002-single-enforcement-path.md",
+      "sha256": "54112b2e3a3af3230ea4674e1e354875f514b6974898b2a60e14569380e2359e",
+      "bytes": 389
+    },
+    {
+      "path": "docs/adr/0003-use-case-agnostic-baseline.md",
+      "sha256": "a5533c2cb216239ea817dca2d2fecbecbfd4bdf78884c860fee68f5901625588",
+      "bytes": 361
+    },
+    {
+      "path": "docs/adr/0004-deterministic-policy-authority.md",
+      "sha256": "6fcbdd0f4fb93e7e3c0b7a9bce810be86f01979c21d0af198dece6799f8bb4d9",
+      "bytes": 364
+    },
+    {
+      "path": "docs/adr/0005-tamper-evident-evidence.md",
+      "sha256": "9f0fee77c9aa9fbbae87886bd1dbfd5a13c3031e889b9fbe00dc63254aa36dd3",
+      "bytes": 251
+    },
+    {
+      "path": "docs/adr/0006-external-systems-as-adapters.md",
+      "sha256": "383fde8389ee115a783a155b355271a654fc3d945de6cf54fd7a3ed79001a472",
+      "bytes": 288
+    },
+    {
+      "path": "policies/examples/README.md",
+      "sha256": "4b92f4a99740f6c0771d432e855549cd7b19cccad9d0cd87be2ebbb21d015249",
+      "bytes": 223
+    },
+    {
+      "path": "schemas/action-catalog.schema.json",
+      "sha256": "146cde9d661f9d8b6097c9d3773f2d8d4305482aaf5818ea1ed6f4f807535a34",
+      "bytes": 2206
+    },
+    {
+      "path": "schemas/action-request.schema.json",
+      "sha256": "6b1020b6e5abba08e5f2deb39e8dfe57a32aa716380f8d341aa92b8f589f75c5",
+      "bytes": 1410
+    },
+    {
+      "path": "schemas/action-result.schema.json",
+      "sha256": "ec898f3325ed907516730dea9069f7984360d5af17f02890c6152be9b4c47df7",
+      "bytes": 949
+    },
+    {
+      "path": "schemas/approval-decision.schema.json",
+      "sha256": "1f90dabd8aa586638b68be44d737d37bad228b00258c0365b5ff79f40e683716",
+      "bytes": 456
+    },
+    {
+      "path": "schemas/approval-record.schema.json",
+      "sha256": "9d44a9b588ae3ae9cce218620afac8189157391b82a701ffb8d682234ddcd85e",
+      "bytes": 1887
+    },
+    {
+      "path": "schemas/audit-event.schema.json",
+      "sha256": "6618f39771460189a80ae74bb19139ff600a657bdabf64a08bf7653c3887274c",
+      "bytes": 2151
+    },
+    {
+      "path": "schemas/evidence-bundle-manifest.schema.json",
+      "sha256": "c9f28346c29d6f010f5b7f9a5680996e4f5c75f311e7d3000be6839ccf8a3903",
+      "bytes": 1361
+    },
+    {
+      "path": "schemas/facts.schema.json",
+      "sha256": "d54fc2d9a357fd00d4d6ef80959f99f157e7e130c58d4a9a4d21e421e1163fd5",
+      "bytes": 586
+    },
+    {
+      "path": "schemas/grant.schema.json",
+      "sha256": "9a3c2073cad41428f0c08d1154e11423e45a61f494b27394ecda9ca16998c66c",
+      "bytes": 1601
+    },
+    {
+      "path": "schemas/policy-decision.schema.json",
+      "sha256": "3c140c79e8f0a81422d9261f0432e314f7d8a756baee6d9526e9863217ec014c",
+      "bytes": 1127
+    },
+    {
+      "path": "schemas/policy.schema.json",
+      "sha256": "795ff27fc968cdfbc911b5da57277df3e7d65761c308a58aea69b4e36e307fdf",
+      "bytes": 3498
+    },
+    {
+      "path": "schemas/problem.schema.json",
+      "sha256": "e02a041d5eeec925b57a5e486e7272f1435718da477898c1649e4b933cf14ba7",
+      "bytes": 765
+    },
+    {
+      "path": "schemas/workflow-start.schema.json",
+      "sha256": "a81925f229056cb90ce50f13873c96e6fb3a21660061d2dc39ed638ded92ac93",
+      "bytes": 1554
+    },
+    {
+      "path": "test/contracts/core-acceptance.yaml",
+      "sha256": "32fff9c4118e769823929614f77831b54cbb2264174271036c504d2bf0b64812",
+      "bytes": 2885
+    },
+    {
+      "path": "test/fixtures/audit-hash-fixture.json",
+      "sha256": "bcca7a6f6f896e197a65fc4ded6d92c16f6543253e82623e8886886a2e3acfdd",
+      "bytes": 3405
+    },
+    {
+      "path": "test/fixtures/canonical-read-action.json",
+      "sha256": "c39b7a0f38a21477a37a5ac39ee711e6d92abbf915ef28445c4bea6f7ad1cf76",
+      "bytes": 307
+    },
+    {
+      "path": "test/fixtures/canonical-workflow-start.json",
+      "sha256": "b7000e84c95cb341773971c77ab4824e4283afb7b268da25b8afd16faf9988d0",
+      "bytes": 352
+    },
+    {
+      "path": "test/fixtures/canonical-write-action.json",
+      "sha256": "da0a794c2e624df5b99bc9e4d4d1b318992f25e585991a7d1fa4777c032cc485",
+      "bytes": 307
+    },
+    {
+      "path": "test/fixtures/conformance-action-catalog.json",
+      "sha256": "1af787d177f32bcfe5ac1a5eb4272c5660d3dc4c33cc59bd7abeb1813598d31b",
+      "bytes": 956
+    },
+    {
+      "path": "test/fixtures/conformance-policy.json",
+      "sha256": "46ea291b4936e6df584f8535b2692eaa4d676832f246cc4b96d5903bbf5abf7a",
+      "bytes": 823
+    },
+    {
+      "path": "workflow-packs/README.md",
+      "sha256": "b9a10d1a73e2ab8a24fa31bd2ccc90f02f43b4b0133812652e9c5db098e2dd27",
+      "bytes": 341
+    }
+  ]
+}

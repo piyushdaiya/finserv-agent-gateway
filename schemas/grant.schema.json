@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "grant/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "grant_id",
+    "workflow_id",
+    "tenant_id",
+    "actor_id",
+    "allowed_actions",
+    "resource_scope",
+    "issued_by",
+    "issued_at",
+    "expires_at",
+    "status",
+    "grant_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "grant/v1"
+    },
+    "grant_id": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128
+    },
+    "workflow_id": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "actor_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "allowed_actions": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 256,
+      "items": {
+        "type": "string"
+      }
+    },
+    "resource_scope": {
+      "type": "object"
+    },
+    "issued_by": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "revoked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "status": {
+      "enum": [
+        "ACTIVE",
+        "REVOKED",
+        "EXPIRED"
+      ]
+    },
+    "grant_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

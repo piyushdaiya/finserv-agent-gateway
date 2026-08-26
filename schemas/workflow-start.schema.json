@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "workflow-start/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tenant_id",
+    "workflow_type",
+    "actor_id",
+    "allowed_actions",
+    "resource_scope",
+    "policy_id",
+    "expires_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "workflow-start/v1"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "workflow_type": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.-]{2,127}$"
+    },
+    "actor_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "allowed_actions": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 0,
+      "maxItems": 256,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_-]+(?:\\.[a-z0-9_-]+)+$"
+      }
+    },
+    "resource_scope": {
+      "type": "object",
+      "maxProperties": 64,
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 512
+          },
+          {
+            "type": "array",
+            "uniqueItems": true,
+            "maxItems": 128,
+            "items": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ]
+      }
+    },
+    "policy_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

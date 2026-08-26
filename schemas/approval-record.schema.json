@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "approval-record/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "approval_id",
+    "action_id",
+    "tenant_id",
+    "workflow_id",
+    "requester_actor_id",
+    "state",
+    "request_sha256",
+    "grant_sha256",
+    "action_definition_sha256",
+    "policy_sha256",
+    "requested_at",
+    "expires_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "approval-record/v1"
+    },
+    "approval_id": {
+      "type": "string"
+    },
+    "action_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "workflow_id": {
+      "type": "string"
+    },
+    "requester_actor_id": {
+      "type": "string"
+    },
+    "reviewer_actor_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "enum": [
+        "PENDING",
+        "APPROVED",
+        "REJECTED",
+        "EXPIRED",
+        "INVALIDATED",
+        "CONSUMED"
+      ]
+    },
+    "decision": {
+      "enum": [
+        "APPROVE",
+        "REJECT",
+        null
+      ]
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "grant_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "action_definition_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "policy_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decided_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "consumed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  }
+}

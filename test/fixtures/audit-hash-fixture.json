@@ -1,0 +1,47 @@
+{
+  "schema_version": "audit-hash-fixture/v1",
+  "cases": [
+    {
+      "material": {
+        "schema_version": "audit-hash-material/v1",
+        "sequence": 1,
+        "event_id": "evt_00000000000000000000000000000001",
+        "workflow_id": "wf_1111111111111111",
+        "tenant_id": "tenant-demo",
+        "action_id": "act_1111111111111111",
+        "event_type": "POLICY_DECIDED",
+        "occurred_at": "2026-08-26T12:00:00Z",
+        "request_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "response_sha256": "",
+        "policy_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "approval_id": "",
+        "decision": "ALLOW",
+        "reason_code": "POLICY_ALLOW",
+        "previous_event_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "canonical_json_utf8": "{\"action_id\":\"act_1111111111111111\",\"approval_id\":\"\",\"decision\":\"ALLOW\",\"event_id\":\"evt_00000000000000000000000000000001\",\"event_type\":\"POLICY_DECIDED\",\"occurred_at\":\"2026-08-26T12:00:00Z\",\"policy_sha256\":\"2222222222222222222222222222222222222222222222222222222222222222\",\"previous_event_sha256\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"reason_code\":\"POLICY_ALLOW\",\"request_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"response_sha256\":\"\",\"schema_version\":\"audit-hash-material/v1\",\"sequence\":1,\"tenant_id\":\"tenant-demo\",\"workflow_id\":\"wf_1111111111111111\"}",
+      "expected_sha256": "56d2416c7c78eb993706d266f779412de8fea239a4a61cbc4a8aa1a06d3bc341"
+    },
+    {
+      "material": {
+        "schema_version": "audit-hash-material/v1",
+        "sequence": 2,
+        "event_id": "evt_00000000000000000000000000000002",
+        "workflow_id": "wf_1111111111111111",
+        "tenant_id": "tenant-demo",
+        "action_id": "act_1111111111111111",
+        "event_type": "EXECUTION_COMPLETED",
+        "occurred_at": "2026-08-26T12:00:01Z",
+        "request_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "response_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "policy_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "approval_id": "",
+        "decision": "ALLOW",
+        "reason_code": "POLICY_ALLOW",
+        "previous_event_sha256": "56d2416c7c78eb993706d266f779412de8fea239a4a61cbc4a8aa1a06d3bc341"
+      },
+      "canonical_json_utf8": "{\"action_id\":\"act_1111111111111111\",\"approval_id\":\"\",\"decision\":\"ALLOW\",\"event_id\":\"evt_00000000000000000000000000000002\",\"event_type\":\"EXECUTION_COMPLETED\",\"occurred_at\":\"2026-08-26T12:00:01Z\",\"policy_sha256\":\"2222222222222222222222222222222222222222222222222222222222222222\",\"previous_event_sha256\":\"56d2416c7c78eb993706d266f779412de8fea239a4a61cbc4a8aa1a06d3bc341\",\"reason_code\":\"POLICY_ALLOW\",\"request_sha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"response_sha256\":\"3333333333333333333333333333333333333333333333333333333333333333\",\"schema_version\":\"audit-hash-material/v1\",\"sequence\":2,\"tenant_id\":\"tenant-demo\",\"workflow_id\":\"wf_1111111111111111\"}",
+      "expected_sha256": "3cd82fbb7f2f3deb686adf10265dd2ab51c263d3d85d363230d77d34183e0915"
+    }
+  ]
+}

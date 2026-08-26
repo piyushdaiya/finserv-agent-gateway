@@ -1,0 +1,15 @@
+{
+  "schema_version": "workflow-start/v1",
+  "tenant_id": "tenant-demo",
+  "workflow_type": "conformance.test",
+  "actor_id": "agent-demo",
+  "allowed_actions": [
+    "conformance.read",
+    "conformance.write"
+  ],
+  "resource_scope": {
+    "case_id": "case-demo-001"
+  },
+  "policy_id": "conformance-policy",
+  "expires_at": "2026-08-26T12:15:00Z"
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "policy/v1",
+  "policy_id": "conformance-policy",
+  "version": "0.1.0",
+  "rules": [
+    {
+      "rule_id": "deny-large-write",
+      "priority": 300,
+      "action": "conformance.write",
+      "predicates": [
+        {
+          "source": "facts",
+          "key": "increment",
+          "operator": "INT_GTE",
+          "value": 100
+        }
+      ],
+      "effect": "DENY",
+      "reason_code": "PACK_CONFORMANCE_WRITE_TOO_LARGE"
+    },
+    {
+      "rule_id": "approve-write",
+      "priority": 200,
+      "action": "conformance.write",
+      "effect": "REQUIRE_APPROVAL",
+      "reason_code": "POLICY_REQUIRES_APPROVAL"
+    },
+    {
+      "rule_id": "allow-read",
+      "priority": 100,
+      "action": "conformance.read",
+      "effect": "ALLOW",
+      "reason_code": "POLICY_ALLOW"
+    }
+  ]
+}

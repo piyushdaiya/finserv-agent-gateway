@@ -1,0 +1,31 @@
+{
+  "schema_version": "action-catalog/v1",
+  "pack_id": "conformance.test",
+  "pack_version": "0.1.0",
+  "actions": [
+    {
+      "name": "conformance.read",
+      "version": "1.0.0",
+      "impact_class": "I1_SENSITIVE_READ",
+      "mutating": false,
+      "adapter": "conformance",
+      "payload_schema_id": "conformance-read/v1",
+      "result_schema_id": "conformance-read-result/v1",
+      "fact_extractor": "conformance_read_facts",
+      "redaction_profile": "conformance-default",
+      "idempotency_required": true
+    },
+    {
+      "name": "conformance.write",
+      "version": "1.0.0",
+      "impact_class": "I2_REVERSIBLE_WRITE",
+      "mutating": true,
+      "adapter": "conformance",
+      "payload_schema_id": "conformance-write/v1",
+      "result_schema_id": "conformance-write-result/v1",
+      "fact_extractor": "conformance_write_facts",
+      "redaction_profile": "conformance-default",
+      "idempotency_required": true
+    }
+  ]
+}

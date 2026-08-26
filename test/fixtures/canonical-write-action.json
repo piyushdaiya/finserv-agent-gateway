@@ -1,0 +1,14 @@
+{
+  "schema_version": "action-request/v1",
+  "request_id": "req-write-001",
+  "tenant_id": "tenant-demo",
+  "workflow_id": "wf_1111111111111111",
+  "grant_id": "grant_111111111111",
+  "action": "conformance.write",
+  "resource": {
+    "case_id": "case-demo-001"
+  },
+  "payload": {
+    "increment": 1
+  }
+}

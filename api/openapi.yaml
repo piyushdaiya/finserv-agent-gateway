@@ -1,0 +1,129 @@
+openapi: 3.0.3
+info:
+  title: FinServ Agent Gateway API
+  version: "0.1.0"
+  description: Use-case-agnostic governed action mediation API.
+servers:
+  - url: /
+paths:
+  /healthz:
+    get:
+      operationId: health
+      responses:
+        "200":
+          description: Process is alive.
+  /readyz:
+    get:
+      operationId: ready
+      responses:
+        "200": {description: Core dependencies ready.}
+        "503": {description: Not ready.}
+  /v1/workflows:
+    post:
+      operationId: startWorkflow
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '../schemas/workflow-start.schema.json'}
+      responses:
+        "201": {description: Workflow/grant created.}
+        "400": {description: Invalid request, content: {application/json: {schema: {$ref: '../schemas/problem.schema.json'}}}}
+        "401": {description: Authentication required.}
+        "403": {description: Grant issuer role required.}
+  /v1/workflows/{workflow_id}/revoke:
+    post:
+      operationId: revokeWorkflow
+      security: [{bearerAuth: []}]
+      parameters:
+        - {name: workflow_id, in: path, required: true, schema: {type: string}}
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        "200": {description: Revoked or already revoked.}
+        "401": {description: Authentication required.}
+        "403": {description: Issuer/admin role required.}
+  /v1/actions:
+    post:
+      operationId: submitAction
+      security: [{bearerAuth: []}]
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '../schemas/action-request.schema.json'}
+      responses:
+        "200":
+          description: Governed action completed or denied.
+          content: {application/json: {schema: {$ref: '../schemas/action-result.schema.json'}}}
+        "202":
+          description: Approval required.
+          content: {application/json: {schema: {$ref: '../schemas/action-result.schema.json'}}}
+        "400": {description: Invalid request, content: {application/json: {schema: {$ref: '../schemas/problem.schema.json'}}}}
+        "401": {description: Authentication required.}
+        "403": {description: Scope/policy denied.}
+        "409": {description: Idempotency/state conflict.}
+        "503": {description: Downstream/core unavailable or outcome unknown.}
+  /v1/actions/{action_id}:
+    get:
+      operationId: getAction
+      security: [{bearerAuth: []}]
+      parameters:
+        - {name: action_id, in: path, required: true, schema: {type: string}}
+      responses:
+        "200": {description: Redacted action/control status.}
+        "404": {description: Not found.}
+  /v1/approvals/{approval_id}/decisions:
+    post:
+      operationId: decideApproval
+      security: [{bearerAuth: []}]
+      parameters:
+        - {name: approval_id, in: path, required: true, schema: {type: string}}
+        - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '../schemas/approval-decision.schema.json'}
+      responses:
+        "200": {description: Decision recorded.}
+        "401": {description: Authentication required.}
+        "403": {description: Reviewer role required.}
+        "409": {description: Invalid approval state/binding.}
+  /v1/evidence/exports:
+    post:
+      operationId: exportEvidence
+      security: [{bearerAuth: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [workflow_id]
+              properties:
+                workflow_id: {type: string}
+      responses:
+        "200": {description: Evidence bundle manifest, content: {application/json: {schema: {$ref: '../schemas/evidence-bundle-manifest.schema.json'}}}}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    CorrelationId:
+      name: X-Correlation-ID
+      in: header
+      required: false
+      schema: {type: string, maxLength: 128, pattern: '^[A-Za-z0-9._:-]+$'}
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: {type: string, minLength: 1, maxLength: 128}
