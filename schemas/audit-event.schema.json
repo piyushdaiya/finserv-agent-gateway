@@ -55,7 +55,10 @@
         "EXECUTION_COMPLETED",
         "EXECUTION_FAILED",
         "EXECUTION_OUTCOME_UNKNOWN",
-        "EVIDENCE_EXPORTED"
+        "EVIDENCE_EXPORTED",
+        "DATA_ACCESS_AUTHORIZED",
+        "DATA_ACCESS_DENIED",
+        "DATA_DISCLOSED"
       ]
     },
     "occurred_at": {
@@ -107,6 +110,20 @@
     },
     "event_sha256": {
       "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "authority_context_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "data_access_summary_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
       "pattern": "^[0-9a-f]{64}$"
     }
   }

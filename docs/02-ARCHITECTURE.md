@@ -15,7 +15,7 @@ FinServ Agent Gateway is a policy-enforced action mediation service. It separate
 | Agent/service  | ----> | FinServ Agent Gateway       |
 | authenticated  |       |                             |
 | caller         |       | 1. Ingress/Authn            |
-+----------------+       | 2. Workflow/Grant           |
++----------------+       | 2. Authority/Workflow/Grant |
                          | 3. Action Catalog            |
                          | 4. Fact Extraction           |
                          | 5. Policy Decision           |
@@ -36,7 +36,7 @@ FinServ Agent Gateway is a policy-enforced action mediation service. It separate
 
 Responsibilities:
 
-- authenticate caller identity;
+- authenticate caller identity and resolve trusted principal/acting-actor context;
 - validate exact JSON schema;
 - reject duplicate JSON object keys;
 - reject unknown fields in normative request objects;
@@ -54,12 +54,17 @@ A `Grant` binds:
 
 - tenant;
 - workflow;
-- actor;
+- trusted authority context: requesting principal, acting actor, authority source, and delegation chain;
 - allowed action names;
 - resource scope;
+- allowed purpose and destination sets;
+- data scope and maximum sensitivity;
+- quantitative authority bounds, including action/data/delegation/fan-out limits and workflow-defined integer limits;
 - issuance identity;
 - issuance/expiry time;
 - status (`ACTIVE`, `REVOKED`, `EXPIRED`).
+
+Delegated authority is intersection-only: every child hop must be equal to or narrower than its parent across tenant, workflow, actor, action, resource, purpose, destination, data scope, quantitative bounds, and expiry.
 
 The caller cannot mint, widen, extend, or revoke its own grant unless a future explicit administration role authorizes that operation outside the normal action path.
 
@@ -71,14 +76,17 @@ An action definition identifies:
 
 - canonical action name;
 - semantic version;
-- impact class;
+- impact class (`I0_METADATA`, `I1_READ`, `I2_REVERSIBLE_WRITE`, `I3_HIGH_IMPACT`);
+- independent data-sensitivity class (`D0_PUBLIC` through `D3_RESTRICTED`);
 - mutating/non-mutating nature;
 - adapter/executor name;
 - payload schema ID;
 - result schema ID;
 - fact-extractor contract;
 - whether idempotency is mandatory;
-- redaction profile.
+- redaction profile;
+- declared authorization projection (security-relevant resource/fact keys plus purpose/destination requirements);
+- data-access profile identifier.
 
 Unknown actions fail closed.
 
@@ -99,10 +107,12 @@ No floating-point facts. No arbitrary nested JSON. No LLM-derived policy facts i
 
 The policy engine consumes only:
 
-- authenticated actor metadata;
-- workflow/grant metadata;
+- authenticated principal and acting-actor metadata;
+- trusted authority/delegation context;
+- workflow/grant metadata including authority bounds and data scope;
 - action catalog metadata;
-- deterministic extracted facts;
+- deterministic extracted facts and declared security-relevant action parameters;
+- purpose, destination, and normalized data-access context;
 - approval state where applicable;
 - immutable policy bundle content.
 
@@ -120,7 +130,7 @@ When policy returns `REQUIRE_APPROVAL`:
 
 - no downstream executor is invoked;
 - a pending approval record is created;
-- the approval binds to exact hashes of the normalized request, action definition, policy bundle, and grant;
+- the approval binds to exact hashes of the normalized request, action definition, policy bundle, grant, authority context, and data-access context;
 - approval has an expiration time;
 - the approving identity must be distinct from the caller identity in baseline v0.1;
 - approval is single-use.
@@ -139,7 +149,9 @@ It enforces:
 - request/result schema validation;
 - no unapproved redirect to a different adapter;
 - no automatic retry after an ambiguous mutating result;
-- redaction before durable result persistence.
+- enforce field/category disclosure scope and source-side projection rules for governed reads;
+- enforce purpose/destination/data/quantitative bounds before disclosure;
+- redaction/tokenization before durable result persistence.
 
 ### 3.8 Audit/evidence/replay
 
@@ -154,8 +166,9 @@ Every governed action must pass this exact logical sequence:
 ```text
 AUTHENTICATE
  -> VALIDATE_REQUEST
- -> LOAD_WORKFLOW_AND_GRANT
+ -> LOAD_WORKFLOW_GRANT_AND_AUTHORITY
  -> RESOLVE_ACTION
+ -> VALIDATE_PARAMETER_AND_DATA_SCOPE
  -> EXTRACT_FACTS
  -> EVALUATE_POLICY
  -> [DENY | REQUIRE_APPROVAL | ALLOW]
@@ -173,7 +186,9 @@ The gateway fails closed on:
 
 - unknown action;
 - missing/invalid/expired/revoked grant;
-- tenant/workflow/actor scope mismatch;
+- tenant/workflow/principal/actor/delegation scope mismatch;
+- purpose/destination/resource/data-scope mismatch;
+- authority or quantitative bound exceeded;
 - action-schema mismatch;
 - fact-extraction failure;
 - missing policy;
@@ -184,10 +199,18 @@ The gateway fails closed on:
 - evidence persistence failure before a mutating action is dispatched;
 - uncertain post-dispatch state according to the execution rules.
 
-## 6. LLM boundary
+## 6. Sensitive-data boundary
+
+Data disclosure is a governed execution outcome. A read action must be authorized for both action impact and data sensitivity.
+
+The broker enforces the rules in `21-SENSITIVE-DATA-ACCESS-GOVERNANCE.md`, including field/category scope, purpose limitation, destination restrictions, source-side minimization where supported, bulk limits, and evidence-safe handling.
+
+A caller's declared purpose, requested fields, destination, or model rationale never creates authority.
+
+## 7. LLM boundary
 
 LLMs may exist elsewhere in a product workflow, but the gateway's authorization decision is deterministic. An LLM output can be data supplied by a workflow pack only if the pack explicitly validates and classifies it; the LLM itself is never the authority to grant a permission or approve a regulated action.
 
-## 7. Deployment neutrality
+## 8. Deployment neutrality
 
 The product architecture does not assume a specific cloud, host, container runtime, coding platform, model router, or engineering system. Deployment profiles are separate artifacts produced after implementation requirements are known.

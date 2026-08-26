@@ -11,7 +11,9 @@ The baseline assumes a transactional relational store for control state. Postgre
 - workflow_id PK
 - tenant_id
 - workflow_type
-- actor_id
+- requesting_principal_id
+- acting_actor_id
+- authority_context_sha256
 - policy_bundle_id
 - created_at
 - expires_at
@@ -23,9 +25,13 @@ The baseline assumes a transactional relational store for control state. Postgre
 - grant_id PK
 - workflow_id FK
 - tenant_id
-- actor_id
+- authority_context JSON / authority_context_sha256
 - allowed_actions JSON/array
 - resource_scope JSON
+- allowed_purposes JSON/array
+- allowed_destinations JSON/array
+- data_scope JSON
+- authority_bounds JSON
 - issued_by
 - issued_at
 - expires_at
@@ -40,6 +46,9 @@ Grant content is immutable after issuance except revocation/status timestamps.
 - action_name + semantic_version composite identity
 - pack_id/version
 - impact_class
+- data_sensitivity
+- authorization_projection JSON
+- data_access_profile_id
 - mutating
 - adapter_name
 - payload_schema_id
@@ -64,19 +73,24 @@ Historical content remains available while referenced by evidence retention poli
 - request_id
 - workflow_id
 - tenant_id
-- actor_id
+- requesting_principal_id
+- acting_actor_id
+- authority_context_sha256
 - grant_id
 - action_name
 - action_definition_sha256
 - normalized_request_sha256
 - facts_sha256
+- purpose
+- destination
+- data_access_context_sha256 nullable
 - redacted_request JSON nullable
 - correlation_id
 - idempotency_key
 - received_at
 - status
 
-Unique constraint on `(tenant_id, actor_id, workflow_id, idempotency_key)`.
+Unique constraint on `(tenant_id, acting_actor_id, workflow_id, idempotency_key)`.
 
 ### `policy_decisions`
 
@@ -96,7 +110,7 @@ Unique constraint on `(tenant_id, actor_id, workflow_id, idempotency_key)`.
 - reviewer_actor_id nullable until decision
 - state
 - decision
-- request/grant/action/policy hashes
+- request/grant/action/policy/authority-context/data-access hashes
 - requested_at
 - decided_at nullable
 - expires_at
@@ -147,10 +161,18 @@ Before any mutating downstream dispatch, the database transaction must durably c
 
 The implementation must prevent two concurrent processes from dispatching the same `action_id` twice.
 
-## 4. Sensitive data
+## 4. Authority and disclosure accounting
 
-The database is not a raw prompt/payload warehouse. Persist only data required by control/evidence contracts, applying redaction first.
+Counters used for authority bounds (action count, records/bytes disclosed, fan-out, and workflow-defined cumulative integer limits) must be transactionally enforced so concurrent requests cannot exceed a grant limit.
 
-## 5. Tenant isolation
+## 5. Sensitive data
+
+The database is not a raw prompt/payload warehouse. Persist only data required by control/evidence contracts, applying minimization/redaction/tokenization first.
+
+Raw `D2`/`D3` values are excluded from ordinary audit/evidence storage by default. Low-entropy sensitive equality binding uses protected keyed commitments rather than plain unsalted SHA-256.
+
+Disclosure summaries persist categories/counts/purpose/destination and the data-access-context digest, not the disclosed cleartext.
+
+## 6. Tenant isolation
 
 Every control record is tenant-bound. The implementation must enforce tenant predicates in the data-access layer. Database row-level security is recommended for production but is not a baseline portability requirement until a deployment profile freezes it.

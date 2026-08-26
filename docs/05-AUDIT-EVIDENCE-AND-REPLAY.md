@@ -5,7 +5,8 @@
 Evidence must support independent answers to:
 
 - what was requested;
-- what authority existed;
+- what principal/actor/delegated authority existed;
+- what purpose/destination/data scope and quantitative bounds applied;
 - what policy decided;
 - whether approval was required and obtained;
 - whether execution occurred;
@@ -35,6 +36,9 @@ Baseline event types:
 - `EXECUTION_COMPLETED`
 - `EXECUTION_FAILED`
 - `EXECUTION_OUTCOME_UNKNOWN`
+- `DATA_ACCESS_AUTHORIZED`
+- `DATA_ACCESS_DENIED`
+- `DATA_DISCLOSED`
 - `EVIDENCE_EXPORTED`
 
 ## 3. Hash chain
@@ -68,6 +72,8 @@ A database superuser can still tamper with ordinary storage; therefore baseline 
 An evidence bundle manifest references:
 
 - workflow/grant/action identities and hashes;
+- authority-context hash and delegation lineage;
+- purpose/destination/data-access summary and hash;
 - request hash;
 - extracted-facts hash;
 - action-definition hash;
@@ -80,7 +86,7 @@ An evidence bundle manifest references:
 - generation timestamp;
 - bundle format version.
 
-Raw sensitive payloads are optional artifacts and are excluded by default.
+Raw `D2`/`D3` payloads are excluded by default. Sensitive-data evidence records categories/counts/purpose/destination and keyed commitments where necessary rather than low-entropy cleartext hashes.
 
 ## 6. Replay
 
@@ -99,9 +105,10 @@ Replay must:
 3. reconstruct policy inputs;
 4. re-run deterministic policy evaluation;
 5. compare computed decision/reason code/policy hash;
-6. verify approval binding where present;
-7. verify execution lineage references;
-8. produce a replay report.
+6. verify authority/delegation, parameter, purpose, destination, data-scope, and quantitative-bound inputs;
+7. verify approval binding where present;
+8. verify execution/disclosure lineage references;
+9. produce a replay report.
 
 Replay must not:
 

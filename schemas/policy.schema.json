@@ -55,7 +55,7 @@
             "items": {
               "enum": [
                 "I0_METADATA",
-                "I1_SENSITIVE_READ",
+                "I1_READ",
                 "I2_REVERSIBLE_WRITE",
                 "I3_HIGH_IMPACT"
               ]
@@ -75,6 +75,9 @@
               "properties": {
                 "source": {
                   "enum": [
+                    "data",
+                    "authority",
+                    "principal",
                     "actor",
                     "workflow",
                     "grant",
@@ -133,6 +136,18 @@
           "reason_code": {
             "type": "string",
             "pattern": "^[A-Z][A-Z0-9_]{2,127}$"
+          },
+          "data_sensitivities": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "D0_PUBLIC",
+                "D1_INTERNAL",
+                "D2_CUSTOMER_CONFIDENTIAL",
+                "D3_RESTRICTED"
+              ]
+            }
           }
         }
       }

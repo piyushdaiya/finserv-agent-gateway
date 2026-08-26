@@ -8,6 +8,8 @@
   "resource": {
     "case_id": "case-demo-001"
   },
+  "purpose": "conformance_test",
+  "destination": "INTERNAL_SERVICE",
   "payload": {
     "increment": 1
   }

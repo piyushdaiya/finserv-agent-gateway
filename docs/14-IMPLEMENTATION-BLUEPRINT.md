@@ -18,7 +18,8 @@ Before production code:
 
 Implement:
 
-- IDs and enums;
+- IDs and enums, including independent impact and data-sensitivity classes;
+- authority-context types and trusted-context hashing;
 - strict JSON decoder with duplicate-key rejection;
 - canonical JSON hashing;
 - action-name validation;
@@ -32,17 +33,20 @@ No network adapter needed.
 Implement:
 
 - workflow creation;
+- principal/acting-actor/delegation context;
 - grant issue/revoke/expiry;
 - role separation;
 - action definition registry;
 - definition hashing;
-- scope comparison.
+- resource/purpose/destination/data-scope comparison;
+- authority/economic/blast-radius bounds and counters.
 
 ## Stage 3 — facts and policy engine
 
 Implement:
 
 - typed fact map;
+- declared authorization projection and parameter-aware inputs;
 - policy schema parser;
 - ordered rule evaluator;
 - every baseline predicate;
@@ -57,21 +61,34 @@ Implement exact state transitions, binding hashes, reviewer separation, expiry, 
 
 Implement relational persistence, unique constraints, idempotency semantics, audit event chain and redaction.
 
-## Stage 6 — executor broker and conformance adapter
+## Stage 6 — sensitive-data governance
+
+Implement:
+
+- data-access profile validation;
+- D0-D3 sensitivity handling independent of impact class;
+- field/category scope;
+- purpose/destination enforcement;
+- source-side projection planning;
+- bulk/record/byte bounds;
+- keyed sensitive-value commitments;
+- disclosure summaries/audit events.
+
+## Stage 7 — executor broker and conformance adapter
 
 Implement the generic adapter interface and test-only read/write adapter. Prove zero/one side-effect semantics and ambiguous outcome behavior.
 
-## Stage 7 — evidence and replay
+## Stage 8 — evidence and replay
 
 Implement deterministic bundle export, chain verification, policy replay and network-free replay tests.
 
-## Stage 8 — API delivery
+## Stage 9 — API delivery
 
 Expose the frozen OpenAPI contract with role-aware authentication hooks and bounded request/response handling.
 
-## Stage 9 — complete acceptance
+## Stage 10 — complete acceptance
 
-Run every `CORE-*` acceptance case plus race/concurrency/security tests. Produce release evidence.
+Run every `CORE-*`, `SEC-*`, `AUTH-*`, and `DATA-*` acceptance case plus race/concurrency/security tests. Produce release evidence.
 
 ## Implementation non-permissions
 

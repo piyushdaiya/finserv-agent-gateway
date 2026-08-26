@@ -102,7 +102,7 @@ If requests can be delegated or originate from multiple agents:
 
 - each principal/hop must be authenticated;
 - messages are untrusted until schema and authorization checks pass;
-- delegation scope is the intersection of parent authority and requested child scope;
+- delegation scope is the intersection of parent authority and requested child scope across action, resource, purpose, destination, data scope, quantitative bounds, and expiry;
 - tenant/workflow/resource boundaries cannot be crossed through delegation;
 - replay protection and correlation/causation identifiers are required;
 - internal network location does not establish trust.
@@ -149,7 +149,7 @@ Where an LLM/GenAI component participates in creating requests or context, the i
 At the gateway boundary specifically:
 
 - prompt injection cannot become authorization because natural language has no authority;
-- sensitive information disclosure is limited through secret isolation and redaction;
+- sensitive information disclosure is limited through trusted data entitlement, purpose/destination binding, minimization, field/category scope, source projection, secret isolation, and redaction/tokenization;
 - excessive agency is constrained by explicit grants/action catalog/policy/approval;
 - supply-chain risk is addressed through workflow-pack/dependency/provenance controls;
 - poisoned or misleading context cannot mutate authoritative control state;
@@ -195,3 +195,7 @@ Before any real agentic workflow is production-enabled, adversarial testing MUST
 - kill/revoke behavior while the agent continues operating.
 
 Findings must map to the pinned standards registry and produce remediation evidence. A production workflow cannot pass solely because no classical CVE is present.
+
+## 7. Agentic data-access invariant
+
+Model or agent context can request data but cannot authorize its disclosure. A tool/RAG/memory result containing a value does not prove that the acting agent is entitled to receive, retain, forward, or reuse that value. Governed data access uses the trusted grant/data-access context defined in `21-SENSITIVE-DATA-ACCESS-GOVERNANCE.md`.

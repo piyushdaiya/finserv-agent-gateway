@@ -24,6 +24,8 @@ Normative logical roles:
 
 The baseline does not freeze JWT versus mTLS versus another authentication mechanism. The implementation must expose a verifier abstraction and preserve authenticated identity/role as trusted context rather than accepting caller-supplied role fields.
 
+`POST /v1/workflows` is issuer-only and establishes the trusted authority context (requesting principal, acting actor, authority source, delegation chain), purpose/destination allowlists, data scope, and quantitative authority bounds. `POST /v1/actions` cannot replace those trusted values; its `purpose`, `destination`, `resource`, and optional `requested_data` are requests to be validated against them.
+
 ## 3. Correlation IDs
 
 Every non-health request has a correlation ID. If supplied, it must match:
@@ -39,7 +41,7 @@ Otherwise the gateway generates one.
 `POST /v1/actions` requires `Idempotency-Key`:
 
 - 1–128 visible ASCII characters excluding whitespace/control characters;
-- key is scoped to tenant + actor + workflow;
+- key is scoped to tenant + acting actor + workflow;
 - identical key + identical normalized request returns the stored action/control result;
 - identical key + different normalized request returns HTTP 409 with `IDEMPOTENCY_KEY_REUSE`;
 - no generated replacement key on conflict or timeout.

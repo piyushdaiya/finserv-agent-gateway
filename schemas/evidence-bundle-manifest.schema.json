@@ -63,6 +63,20 @@
     "manifest_sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
+    },
+    "authority_context_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "data_access_summary_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
     }
   }
 }

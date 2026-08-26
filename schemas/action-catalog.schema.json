@@ -37,7 +37,10 @@
           "adapter",
           "payload_schema_id",
           "result_schema_id",
-          "redaction_profile"
+          "redaction_profile",
+          "data_sensitivity",
+          "authorization_projection",
+          "data_access_profile_id"
         ],
         "properties": {
           "name": {
@@ -52,7 +55,7 @@
           "impact_class": {
             "enum": [
               "I0_METADATA",
-              "I1_SENSITIVE_READ",
+              "I1_READ",
               "I2_REVERSIBLE_WRITE",
               "I3_HIGH_IMPACT"
             ]
@@ -86,6 +89,54 @@
           },
           "idempotency_required": {
             "type": "boolean"
+          },
+          "data_sensitivity": {
+            "enum": [
+              "D0_PUBLIC",
+              "D1_INTERNAL",
+              "D2_CUSTOMER_CONFIDENTIAL",
+              "D3_RESTRICTED"
+            ]
+          },
+          "authorization_projection": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "resource_keys",
+              "fact_keys",
+              "purpose_required",
+              "destination_required"
+            ],
+            "properties": {
+              "resource_keys": {
+                "type": "array",
+                "uniqueItems": true,
+                "maxItems": 128,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_.-]{0,127}$"
+                }
+              },
+              "fact_keys": {
+                "type": "array",
+                "uniqueItems": true,
+                "maxItems": 256,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_.-]{0,127}$"
+                }
+              },
+              "purpose_required": {
+                "type": "boolean"
+              },
+              "destination_required": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data_access_profile_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]{2,127}$"
           }
         }
       }

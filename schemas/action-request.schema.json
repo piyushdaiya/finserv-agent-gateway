@@ -11,7 +11,9 @@
     "grant_id",
     "action",
     "resource",
-    "payload"
+    "payload",
+    "purpose",
+    "destination"
   ],
   "properties": {
     "schema_version": {
@@ -66,6 +68,53 @@
     },
     "payload": {
       "type": "object"
+    },
+    "purpose": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.-]{1,127}$"
+    },
+    "destination": {
+      "enum": [
+        "HUMAN_REVIEW_UI",
+        "INTERNAL_SERVICE",
+        "INTERNAL_AGENT_RUNTIME",
+        "LOCAL_MODEL",
+        "APPROVED_EXTERNAL_MODEL",
+        "EXTERNAL_SERVICE"
+      ]
+    },
+    "requested_data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fields",
+        "categories",
+        "max_records"
+      ],
+      "properties": {
+        "fields": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 1024,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "categories": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 256,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]{1,127}$"
+          }
+        },
+        "max_records": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
     }
   }
 }

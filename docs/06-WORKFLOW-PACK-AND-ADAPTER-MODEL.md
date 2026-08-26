@@ -15,8 +15,11 @@ A pack contains:
 - action catalog entries;
 - request/result JSON schemas;
 - deterministic fact extractors;
-- resource-scope rules;
-- redaction profiles;
+- resource-scope and authorization-projection rules;
+- purpose/destination semantics;
+- data classification and data-access profiles;
+- redaction/tokenization profiles;
+- authority/economic bound key definitions where domain-specific;
 - adapter declarations;
 - sample/default policies;
 - conformance fixtures;
@@ -41,7 +44,9 @@ Workflow pack owns:
 - domain action vocabulary;
 - payload/result semantics;
 - deterministic domain facts;
-- resource scoping semantics;
+- resource, purpose, destination, and data-scoping semantics;
+- security-relevant parameter projection;
+- field/category sensitivity classification;
 - downstream adapter behavior;
 - domain-specific policy examples.
 
@@ -54,6 +59,7 @@ ValidateConfig(config) -> error
 Prepare(validated ActionRequest) -> PreparedExecution
 Execute(context, PreparedExecution, IdempotencyKey) -> ExecutionResult | ExecutionError
 ClassifyOutcome(error/result) -> COMPLETED | FAILED_SAFE | OUTCOME_UNKNOWN
+PlanDataProjection(validated ActionRequest, Grant) -> minimum source projection
 RedactRequest(payload) -> redacted payload
 RedactResult(result) -> redacted result
 ```
@@ -72,7 +78,9 @@ Every mutating adapter documents:
 - maximum request/response sizes;
 - allowed hosts/endpoints;
 - credential source and scope;
-- redaction behavior;
+- data-sensitivity classification and redaction/tokenization behavior;
+- source-side projection capability and overfetch behavior;
+- maximum/bulk read behavior where applicable;
 - health/readiness behavior.
 
 If the adapter cannot determine whether a timed-out mutating request executed, the outcome is `OUTCOME_UNKNOWN`; the gateway performs no automatic retry.

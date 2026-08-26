@@ -23,6 +23,8 @@ Assumed potentially compromised or behaviorally incorrect.
 Must never be trusted to:
 
 - choose its own effective policy;
+- self-assert or replace its trusted principal, acting-actor, authority source, or delegation chain;
+- widen purpose, destination, resource, data scope, or quantitative authority bounds;
 - mint or widen its grant;
 - mark an approval complete;
 - select an unregistered executor;
@@ -77,10 +79,15 @@ One secret must not automatically imply all roles.
 A grant is server-issued authority. Baseline constraints:
 
 - random 128-bit-or-greater grant identifier;
+- trusted requesting-principal and acting-actor identity binding;
+- explicit authority source and bounded delegation chain;
 - immutable after issuance except status/revocation metadata;
 - tenant, workflow and actor bound;
 - explicit allowed action set;
 - explicit resource scope;
+- explicit allowed purposes and destinations;
+- explicit data scope and maximum sensitivity;
+- explicit quantitative authority bounds;
 - issuance and expiration timestamps;
 - empty allowed-action set means **deny all**;
 - default lifetime 15 minutes;
@@ -104,7 +111,7 @@ An approval record binds to:
 - expiry timestamp;
 - consumption state.
 
-Changing any bound input invalidates the approval.
+Changing any bound input, including trusted authority context, security-relevant parameters, purpose, destination, or data-access context, invalidates the approval.
 
 ## 6. Side-effect safety
 
@@ -125,8 +132,10 @@ Baseline rules:
 
 - raw secrets are never written to audit events;
 - authorization headers are never persisted;
-- sensitive payload fields identified by the action's redaction profile are replaced before durable storage;
-- request/result SHA-256 values may bind evidence without preserving cleartext;
+- sensitive payload fields identified by the action's data/redaction profiles are minimized and replaced before durable storage;
+- source-side field projection is preferred/required according to the data-access profile;
+- plain SHA-256 of low-entropy sensitive values is not used as a confidentiality mechanism; keyed commitments are used where equality binding is required without retention;
+- request/result SHA-256 values may bind canonical redacted structures without preserving cleartext;
 - logs must not contain raw credentials or full sensitive request bodies;
 - evidence exports use the same or stricter redaction profile as durable storage.
 
@@ -170,7 +179,12 @@ Registration must validate:
 - silent downstream retry;
 - audit-event deletion/modification detection;
 - evidence replay causing side effects;
-- workflow-pack bypass of the enforcement path.
+- workflow-pack bypass of the enforcement path;
+- forged/widened delegation;
+- action-name authorization that ignores security-relevant parameters;
+- purpose or destination substitution;
+- bulk sensitive-data enumeration;
+- sensitive-field over-disclosure and low-entropy hash disclosure risk.
 
 ## 11. Threats not solved by the baseline alone
 

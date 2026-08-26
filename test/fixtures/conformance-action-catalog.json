@@ -6,14 +6,24 @@
     {
       "name": "conformance.read",
       "version": "1.0.0",
-      "impact_class": "I1_SENSITIVE_READ",
+      "impact_class": "I1_READ",
       "mutating": false,
       "adapter": "conformance",
       "payload_schema_id": "conformance-read/v1",
       "result_schema_id": "conformance-read-result/v1",
       "fact_extractor": "conformance_read_facts",
       "redaction_profile": "conformance-default",
-      "idempotency_required": true
+      "idempotency_required": true,
+      "data_sensitivity": "D0_PUBLIC",
+      "authorization_projection": {
+        "resource_keys": [
+          "case_id"
+        ],
+        "fact_keys": [],
+        "purpose_required": true,
+        "destination_required": true
+      },
+      "data_access_profile_id": "conformance.public"
     },
     {
       "name": "conformance.write",
@@ -25,7 +35,19 @@
       "result_schema_id": "conformance-write-result/v1",
       "fact_extractor": "conformance_write_facts",
       "redaction_profile": "conformance-default",
-      "idempotency_required": true
+      "idempotency_required": true,
+      "data_sensitivity": "D0_PUBLIC",
+      "authorization_projection": {
+        "resource_keys": [
+          "case_id"
+        ],
+        "fact_keys": [
+          "increment"
+        ],
+        "purpose_required": true,
+        "destination_required": true
+      },
+      "data_access_profile_id": "conformance.none"
     }
   ]
 }

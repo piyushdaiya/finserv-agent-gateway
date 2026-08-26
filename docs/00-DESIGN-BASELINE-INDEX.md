@@ -24,13 +24,15 @@ This baseline is the normative product specification for the first implementatio
 16. `18-SECURE-CODING-AND-SDLC.md`
 17. `19-AGENTIC-AI-SECURITY-REQUIREMENTS.md`
 18. `20-SECURITY-VERIFICATION-AND-RELEASE-GATES.md`
-19. ADRs under `docs/adr/`
-20. schemas under `schemas/`
-21. `api/openapi.yaml`
-22. conformance contract `test/contracts/core-acceptance.yaml`
-23. security conformance contract `test/contracts/security-acceptance.yaml`
-24. version-pinned security registry `security/standards-baseline.yaml`
-25. `CONTRIBUTING.md`
+19. `21-SENSITIVE-DATA-ACCESS-GOVERNANCE.md`
+20. ADRs under `docs/adr/`
+21. schemas under `schemas/`
+22. `api/openapi.yaml`
+23. conformance contract `test/contracts/core-acceptance.yaml`
+24. security conformance contract `test/contracts/security-acceptance.yaml`
+25. authority/data conformance contract `test/contracts/authority-data-acceptance.yaml`
+26. version-pinned security registry `security/standards-baseline.yaml`
+27. `CONTRIBUTING.md`
 
 `12-EXTERNAL-DESIGN-LEARNINGS.md` and `17-FUTURE-WORKFLOW-SELECTION.md` are informative unless a later ADR promotes specific statements to normative requirements.
 
@@ -51,9 +53,13 @@ The first implementation MUST have:
 
 - one canonical enforcement pipeline for all governed actions;
 - deterministic policy authority with no LLM authorization role;
-- workflow-scoped authorization grants;
+- workflow-scoped authorization grants with first-class principal/actor/delegation context;
 - deny-by-default behavior;
 - explicit action catalog registration;
+- parameter-aware authorization over declared resource/fact/purpose/destination inputs;
+- quantitative authority and economic/blast-radius bounds;
+- independent action-impact (`I0`-`I3`) and data-sensitivity (`D0`-`D3`) classification;
+- purpose- and destination-bound sensitive-data access with field/category scope and minimization;
 - human approval for actions whose policy result is `REQUIRE_APPROVAL`;
 - approval bound to exact action/request/policy/grant state;
 - no downstream side effect before required approval;

@@ -2,13 +2,50 @@
   "schema_version": "workflow-start/v1",
   "tenant_id": "tenant-demo",
   "workflow_type": "conformance.test",
-  "actor_id": "agent-demo",
+  "authority_context": {
+    "schema_version": "authority-context/v1",
+    "requesting_principal": {
+      "principal_id": "human-demo",
+      "principal_type": "HUMAN"
+    },
+    "acting_actor": {
+      "actor_id": "agent-demo",
+      "actor_type": "AGENT"
+    },
+    "authority_source": "trusted-test-issuer",
+    "delegation_chain": []
+  },
   "allowed_actions": [
     "conformance.read",
     "conformance.write"
   ],
   "resource_scope": {
     "case_id": "case-demo-001"
+  },
+  "allowed_purposes": [
+    "conformance_test"
+  ],
+  "allowed_destinations": [
+    "INTERNAL_SERVICE"
+  ],
+  "data_scope": {
+    "maximum_sensitivity": "D0_PUBLIC",
+    "allowed_fields": [],
+    "denied_fields": [],
+    "allowed_categories": [],
+    "max_records_per_action": 1,
+    "max_bytes_per_action": 4096,
+    "bulk_access": false
+  },
+  "authority_bounds": {
+    "max_action_count": 100,
+    "max_total_records": 100,
+    "max_total_bytes": 1048576,
+    "max_delegation_depth": 0,
+    "max_fan_out": 1,
+    "numeric_limits": {
+      "conformance_increment": 99
+    }
   },
   "policy_id": "conformance-policy",
   "expires_at": "2026-08-26T12:15:00Z"

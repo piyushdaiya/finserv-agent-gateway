@@ -8,6 +8,13 @@
   "resource": {
     "case_id": "case-demo-001"
   },
+  "purpose": "conformance_test",
+  "destination": "INTERNAL_SERVICE",
+  "requested_data": {
+    "fields": [],
+    "categories": [],
+    "max_records": 1
+  },
   "payload": {
     "value": "hello"
   }

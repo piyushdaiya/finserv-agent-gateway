@@ -16,7 +16,9 @@
     "action_definition_sha256",
     "policy_sha256",
     "requested_at",
-    "expires_at"
+    "expires_at",
+    "authority_context_sha256",
+    "data_access_context_sha256"
   ],
   "properties": {
     "schema_version": {
@@ -97,6 +99,14 @@
         "null"
       ],
       "format": "date-time"
+    },
+    "authority_context_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "data_access_context_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     }
   }
 }

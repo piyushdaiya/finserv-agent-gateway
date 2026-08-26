@@ -6,7 +6,7 @@ Status: **NORMATIVE**
 
 A FinServ Agent Gateway release is secure only to the extent that required controls have current evidence. Security checks are gates, not advisory dashboards.
 
-`test/contracts/security-acceptance.yaml` defines machine-readable baseline cases. `security/standards-baseline.yaml` pins external reference versions.
+`test/contracts/security-acceptance.yaml` and `test/contracts/authority-data-acceptance.yaml` define machine-readable security/authority/data baseline cases. `security/standards-baseline.yaml` pins external reference versions.
 
 ## 2. Gate S0 — design and threat model
 
@@ -48,6 +48,7 @@ For a release candidate:
 
 - every `CORE-*` acceptance case passes;
 - every applicable `SEC-*` security acceptance case passes;
+- every `AUTH-*` and `DATA-*` authority/data-governance acceptance case passes;
 - authorization, approval, broker, audit, replay, injection, SSRF, redaction, race, timeout, and malformed-input negative tests pass;
 - fuzz targets run for a documented minimum corpus/time budget determined by the implementation release process;
 - any agentic workflow additionally passes the adversarial cases in `19-AGENTIC-AI-SECURITY-REQUIREMENTS.md`.
@@ -78,6 +79,7 @@ Before a real financial-services workflow processes production data or can perfo
 - any high-impact (`I3`) production workflow must assess applicable ASVS Level 3 requirements and document which are satisfied, not applicable, or blocked;
 - OWASP Top 10:2025 and API Security Top 10:2023 threat review is current;
 - agentic workflows have a current OWASP Agentic Top 10 2026 crosswalk;
+- production sensitive-data workflows have a current privacy/data-flow review against `21-SENSITIVE-DATA-ACCESS-GOVERNANCE.md` and the pinned NIST Privacy Framework reference;
 - workflows involving LLM/GenAI have a current OWASP GenAI LLM Top 10 2026 assessment;
 - penetration/adversarial testing has no unresolved release-blocking finding;
 - operational kill/revoke, incident response, secret rotation, backup/recovery, and audit export procedures are exercised;

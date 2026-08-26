@@ -13,6 +13,7 @@ Every implementation and every contribution MUST satisfy this document. Code aut
 The version-pinned registry in `security/standards-baseline.yaml` is authoritative for external security references. Baseline v0.1 requires engineering practices aligned to:
 
 - NIST SP 800-218 SSDF v1.1;
+- NIST Privacy Framework v1.0 for sensitive-data/privacy-risk design review;
 - OWASP ASVS v5.0.0;
 - OWASP Top 10:2025;
 - OWASP API Security Top 10:2023;
@@ -108,7 +109,8 @@ Outbound adapters MUST:
 - Do not implement custom cryptographic primitives.
 - Security tokens and nonces use `crypto/rand`.
 - Secret/token equality uses a constant-time comparison primitive where timing exposure is relevant.
-- SHA-256 is used only for the integrity/binding purposes specified by the design, not as password hashing.
+- SHA-256 is used only for the integrity/binding purposes specified by the design, not as password hashing or as a confidentiality mechanism for low-entropy sensitive values.
+- Low-entropy sensitive equality commitments use HMAC-SHA-256 (or a later explicitly approved keyed commitment) with a protected evidence key.
 - Secrets are never committed, logged, placed in evidence bundles, or returned in diagnostic errors.
 - Environment variables may bootstrap development credentials, but production secret-management integration is a deployment requirement.
 
@@ -184,3 +186,7 @@ A waiver MUST be explicit, reviewed, time-bounded, and linked to evidence. It MU
 - remediation tracking reference.
 
 Core governance invariants such as default deny, exact approval binding, no broker bypass, no silent ambiguous write retry, redaction of secrets, and zero-side-effect replay are **non-waivable** for a conforming release.
+
+## 12. Sensitive-data implementation rule
+
+Implementations of governed reads MUST enforce `21-SENSITIVE-DATA-ACCESS-GOVERNANCE.md`. Source-side projection, field/category filtering, purpose/destination checks, quantitative disclosure bounds, and redaction/tokenization are security controls and cannot be moved into optional logging/middleware.

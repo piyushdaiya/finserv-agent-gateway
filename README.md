@@ -10,9 +10,9 @@ The baseline is intentionally **workflow-neutral**. It does not assume sanctions
 
 For every governed action, the gateway must be able to answer:
 
-- Who or what requested the action?
-- Under which workflow and authorization grant?
-- What exact action and resource were requested?
+- Which principal requested it, which agent/service acted, and through which delegation chain?
+- Under which workflow and bounded authorization grant?
+- What exact action, resource, security-relevant parameters, purpose, destination, and data scope were requested?
 - Which policy version evaluated it?
 - Was it allowed, denied, or held for human approval?
 - If executed, which adapter performed the side effect and exactly once under which idempotency key?
@@ -33,8 +33,9 @@ No implementation framework, coding agent, orchestration platform, or engineerin
 FinServ Agent Gateway owns:
 
 - action mediation;
-- workflow-scoped grants;
-- deterministic authorization policy evaluation;
+- workflow-scoped grants with delegated-authority context and quantitative bounds;
+- deterministic parameter-aware authorization policy evaluation;
+- sensitive-data access governance with independent D0-D3 classification, purpose/destination/field scope, and minimization;
 - approval state management;
 - executor/adaptor dispatch through a single enforcement path;
 - idempotency and side-effect protection;
@@ -91,6 +92,7 @@ All governed adapters execute only through the gateway's single enforcement path
 ```text
 finserv-agent-gateway/
 ├── README.md
+├── CONTRIBUTING.md
 ├── api/
 │   └── openapi.yaml
 ├── schemas/
@@ -98,8 +100,10 @@ finserv-agent-gateway/
 │   └── examples/
 ├── workflow-packs/
 │   └── README.md
+├── security/
+│   └── standards-baseline.yaml
 ├── test/
-│   ├── contracts/
+│   ├── contracts/   # core, security, authority/data acceptance
 │   └── fixtures/
 ├── docs/
 │   ├── 00-DESIGN-BASELINE-INDEX.md
@@ -120,6 +124,10 @@ finserv-agent-gateway/
 │   ├── 15-ERROR-AND-REASON-CODES.md
 │   ├── 16-REPOSITORY-AND-PROJECT-BOUNDARY.md
 │   ├── 17-FUTURE-WORKFLOW-SELECTION.md
+│   ├── 18-SECURE-CODING-AND-SDLC.md
+│   ├── 19-AGENTIC-AI-SECURITY-REQUIREMENTS.md
+│   ├── 20-SECURITY-VERIFICATION-AND-RELEASE-GATES.md
+│   ├── 21-SENSITIVE-DATA-ACCESS-GOVERNANCE.md
 │   └── adr/
 └── MANIFEST.json
 ```

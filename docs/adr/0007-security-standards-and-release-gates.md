@@ -8,7 +8,7 @@ FinServ Agent Gateway treats secure coding, application/API security, agentic AI
 
 External standards are version-pinned in `security/standards-baseline.yaml`. The project uses explicit applicability mappings and evidence rather than blanket claims of compliance.
 
-Implementation and release are gated by `18-SECURE-CODING-AND-SDLC.md`, `19-AGENTIC-AI-SECURITY-REQUIREMENTS.md`, `20-SECURITY-VERIFICATION-AND-RELEASE-GATES.md`, and `test/contracts/security-acceptance.yaml`.
+Implementation and release are gated by `18-SECURE-CODING-AND-SDLC.md`, `19-AGENTIC-AI-SECURITY-REQUIREMENTS.md`, `20-SECURITY-VERIFICATION-AND-RELEASE-GATES.md`, `test/contracts/security-acceptance.yaml`, and `test/contracts/authority-data-acceptance.yaml`.
 
 AI- or agent-generated code is untrusted contribution and receives the same human review and security verification as human-authored code.
 

@@ -1,0 +1,17 @@
+{
+  "schema_version": "data-access-profile/v1",
+  "profile_id": "conformance.none",
+  "version": "1.0.0",
+  "maximum_sensitivity": "D0_PUBLIC",
+  "source_projection": "NOT_APPLICABLE",
+  "bulk_access": "NOT_APPLICABLE",
+  "default_max_records": 0,
+  "default_max_bytes": 0,
+  "allowed_purposes": [
+    "conformance_test"
+  ],
+  "allowed_destinations": [
+    "INTERNAL_SERVICE"
+  ],
+  "field_rules": []
+}
