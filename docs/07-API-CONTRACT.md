@@ -22,7 +22,7 @@ Normative logical roles:
 - `reviewer`
 - `admin`
 
-The baseline does not freeze JWT versus mTLS versus another authentication mechanism. The implementation must expose a verifier abstraction and preserve authenticated identity/role as trusted context rather than accepting caller-supplied role fields.
+For baseline v0.1 HTTP endpoints, the normative wire contract uses the HTTP `Bearer` authentication scheme declared in `api/openapi.yaml`. This freezes the HTTP transport shape only: it does **not** require JWT, does not freeze a token issuer/format, and does not make bearer-token contents caller-authoritative. The implementation must expose a verifier abstraction that validates the presented credential and produces trusted identity/role context. A later deployment profile or ADR may add another authenticated transport such as mTLS without changing authorization semantics.
 
 `POST /v1/workflows` is issuer-only and establishes the trusted authority context (requesting principal, acting actor, authority source, delegation chain), purpose/destination allowlists, data scope, and quantitative authority bounds. `POST /v1/actions` cannot replace those trusted values; its `purpose`, `destination`, `resource`, and optional `requested_data` are requests to be validated against them.
 

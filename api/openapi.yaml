@@ -116,6 +116,10 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+      description: >-
+        Baseline v0.1 HTTP authentication transport. This does not require JWT
+        and does not freeze token issuer or credential format; credentials are
+        validated by the implementation verifier abstraction into trusted context.
   parameters:
     CorrelationId:
       name: X-Correlation-ID
@@ -126,4 +130,4 @@ components:
       name: Idempotency-Key
       in: header
       required: true
-      schema: {type: string, minLength: 1, maxLength: 128}
+      schema: {type: string, minLength: 1, maxLength: 128, pattern: '^[!-~]{1,128}$'}
