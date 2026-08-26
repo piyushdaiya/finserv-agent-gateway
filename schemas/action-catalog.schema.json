@@ -37,7 +37,9 @@
           "adapter",
           "payload_schema_id",
           "result_schema_id",
+          "fact_extractor",
           "redaction_profile",
+          "idempotency_required",
           "data_sensitivity",
           "authorization_projection",
           "data_access_profile_id"

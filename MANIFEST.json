@@ -21,8 +21,8 @@
     },
     {
       "path": "api/openapi.yaml",
-      "sha256": "b1eed370125758cb110d6fa8e586e10dbf951c751df5514a1f09be7c283866f3",
-      "bytes": 4575
+      "sha256": "ce7d53e95445aa5e4a859a5f48ffbc2dbbf5b919608337e16a0dc197a89ab9b1",
+      "bytes": 4865
     },
     {
       "path": "config/example.env",
@@ -66,8 +66,8 @@
     },
     {
       "path": "docs/07-API-CONTRACT.md",
-      "sha256": "eb9c38f1a3050596383f22a58140e6bb5b2b04ba67124b46a864b25e5b1acaee",
-      "bytes": 2529
+      "sha256": "7451b6d9abdef7b9c61ec91b581e51487afcebbf22f0e938aeb56ac4da08d1fd",
+      "bytes": 2858
     },
     {
       "path": "docs/08-STORAGE-AND-DATA-MODEL.md",
@@ -186,8 +186,8 @@
     },
     {
       "path": "schemas/action-catalog.schema.json",
-      "sha256": "96db6ae4f78f7c5f5f733f2c86a5259ab2abb3cac2b613ba464495ced7008177",
-      "bytes": 3734
+      "sha256": "e34a4f30b94c76706d8106dc1ec4bb2e26681ac6d04421c7efe7480b19741c9d",
+      "bytes": 3796
     },
     {
       "path": "schemas/action-request.schema.json",
