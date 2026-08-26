@@ -2,6 +2,8 @@
 
 The normative wire contract is `api/openapi.yaml` plus JSON schemas in `schemas/`.
 
+The baseline v0.1 API document uses **OpenAPI 3.1.2**. Standalone schemas referenced from the API remain JSON Schema Draft 2020-12 resources and retain their own `$schema` declarations. The OpenAPI contract and standalone schemas therefore use compatible schema dialect semantics; implementations and validators must not strip `$schema`, substitute an OpenAPI-3.0-only schema projection, or fetch an alternate remote schema to make validation pass.
+
 ## 1. Baseline endpoints
 
 - `GET /healthz` — process liveness only.
