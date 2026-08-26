@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "audit-event/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "sequence",
+    "event_id",
+    "workflow_id",
+    "tenant_id",
+    "event_type",
+    "occurred_at",
+    "previous_event_sha256",
+    "event_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "audit-event/v1"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "event_id": {
+      "type": "string"
+    },
+    "workflow_id": {
+      "type": "string"
+    },
+    "tenant_id": {
+      "type": "string"
+    },
+    "action_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "event_type": {
+      "enum": [
+        "WORKFLOW_STARTED",
+        "GRANT_ISSUED",
+        "GRANT_REVOKED",
+        "ACTION_RECEIVED",
+        "ACTION_VALIDATED",
+        "POLICY_DECIDED",
+        "APPROVAL_REQUESTED",
+        "APPROVAL_APPROVED",
+        "APPROVAL_REJECTED",
+        "APPROVAL_EXPIRED",
+        "APPROVAL_INVALIDATED",
+        "APPROVAL_CONSUMED",
+        "EXECUTION_DISPATCHED",
+        "EXECUTION_COMPLETED",
+        "EXECUTION_FAILED",
+        "EXECUTION_OUTCOME_UNKNOWN",
+        "EVIDENCE_EXPORTED",
+        "DATA_ACCESS_AUTHORIZED",
+        "DATA_ACCESS_DENIED",
+        "DATA_DISCLOSED"
+      ]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "request_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "response_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "policy_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "approval_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "decision": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reason_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "previous_event_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "event_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "authority_context_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "data_access_summary_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

@@ -1,0 +1,328 @@
+{
+  "schema_version": "finserv-design-manifest/v1",
+  "product": "FinServ Agent Gateway",
+  "baseline": "v0.1",
+  "scope": "use-case-agnostic product design, contracts, secure coding, agentic security, delegated authority, parameter-aware authorization, bounded authority, sensitive-data governance, and release gates",
+  "files": [
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "785446d20151a985948c66413bb2f37fb3b1288bf3315ed406a7297cacdbb4bc",
+      "bytes": 1214
+    },
+    {
+      "path": "LICENSE-NOTE.md",
+      "sha256": "23766de463a563904ac6e12b00b1f1311bca6d07034b29eec0e3fb61b27f3b53",
+      "bytes": 196
+    },
+    {
+      "path": "README.md",
+      "sha256": "889d6da42d24b34a434d6381bcc04a5538c90f03c9d517f8e6ef2b6b19c4a7b3",
+      "bytes": 6887
+    },
+    {
+      "path": "api/openapi.yaml",
+      "sha256": "b1eed370125758cb110d6fa8e586e10dbf951c751df5514a1f09be7c283866f3",
+      "bytes": 4575
+    },
+    {
+      "path": "config/example.env",
+      "sha256": "7a179fd88b95fb47f039028d3de25ef175da837048c375681b54e4398adece7b",
+      "bytes": 207
+    },
+    {
+      "path": "docs/00-DESIGN-BASELINE-INDEX.md",
+      "sha256": "fc5e8a4987d2f3dde97039e3df273522d32474fc69d93afc2fc66bea5bc19e3f",
+      "bytes": 3905
+    },
+    {
+      "path": "docs/01-PRODUCT-CHARTER.md",
+      "sha256": "74c9db28b6defe78f40e7b053fc578eb83463954f7163c8fb62de9f763f7f987",
+      "bytes": 3230
+    },
+    {
+      "path": "docs/02-ARCHITECTURE.md",
+      "sha256": "1fb07b65e48cb8e4be6424bf6088fd23a67a35bac2cc4f9f2abf9ec2565ab387",
+      "bytes": 8406
+    },
+    {
+      "path": "docs/03-SECURITY-AND-TRUST-BOUNDARIES.md",
+      "sha256": "1bcba333285c75523a1b0fc667f4e86b35835eebcec46b4b6b16f38cd4f94564",
+      "bytes": 7199
+    },
+    {
+      "path": "docs/04-ACTIONS-GRANTS-POLICY-AND-APPROVALS.md",
+      "sha256": "6ec1a8bf8a59ffeed04e9a4fb13d172ae62f2c7517607a1270036fc3630c0fa0",
+      "bytes": 5994
+    },
+    {
+      "path": "docs/05-AUDIT-EVIDENCE-AND-REPLAY.md",
+      "sha256": "df1ba7595bc67483f27ea9469795731fa5ff6db53c50700b8765ef7570c9504e",
+      "bytes": 3673
+    },
+    {
+      "path": "docs/06-WORKFLOW-PACK-AND-ADAPTER-MODEL.md",
+      "sha256": "1788d5a6b335ab643b465c7a0073ecb439199738b011b573d3f0ba137e280457",
+      "bytes": 4015
+    },
+    {
+      "path": "docs/07-API-CONTRACT.md",
+      "sha256": "eb9c38f1a3050596383f22a58140e6bb5b2b04ba67124b46a864b25e5b1acaee",
+      "bytes": 2529
+    },
+    {
+      "path": "docs/08-STORAGE-AND-DATA-MODEL.md",
+      "sha256": "30da38180e1ea303012bfeab01df142adeaf588d61d7ff5c2ae06e0dbd5e1a7c",
+      "bytes": 4414
+    },
+    {
+      "path": "docs/09-TEST-AND-ACCEPTANCE.md",
+      "sha256": "b6f2193826515a8bd9d42b5e8f0fb1f27699230dcdb4ffe27da25d4388070885",
+      "bytes": 3766
+    },
+    {
+      "path": "docs/10-OSS-VS-ENTERPRISE.md",
+      "sha256": "f435794b4347a3f4b63930e7b0c202b6ed4b27e0b0f3a547e1f12bf9c858cfc2",
+      "bytes": 1706
+    },
+    {
+      "path": "docs/11-ROADMAP.md",
+      "sha256": "61c00e6475e8523b4080b649fb33fe3fb9ddcc2e18cf88c1aebc862ea09026a8",
+      "bytes": 2079
+    },
+    {
+      "path": "docs/12-EXTERNAL-DESIGN-LEARNINGS.md",
+      "sha256": "f790eaa93f530aed6d1bb628f7b161084d3b9b58d4e91403455d7042969231dd",
+      "bytes": 2259
+    },
+    {
+      "path": "docs/13-ASSUMPTIONS-AND-NON-ASSUMPTIONS.md",
+      "sha256": "55f26ce5056400e148b7aaf49c3a1b165c778c060d4d6d0d6451f240c98934e1",
+      "bytes": 1374
+    },
+    {
+      "path": "docs/14-IMPLEMENTATION-BLUEPRINT.md",
+      "sha256": "700984f1481b32db50e75b13146ac26b05ccdfbba6705e22cf4c26e9a9dd3e0e",
+      "bytes": 3213
+    },
+    {
+      "path": "docs/15-ERROR-AND-REASON-CODES.md",
+      "sha256": "b48f05880cebf0dbe404affc91f984fa3e32b22517a7e98102494819b2bc5f39",
+      "bytes": 2399
+    },
+    {
+      "path": "docs/16-REPOSITORY-AND-PROJECT-BOUNDARY.md",
+      "sha256": "5497466df4f06a66f9b4dfb06690255982e7216d940e9099195662096ef1f25e",
+      "bytes": 1526
+    },
+    {
+      "path": "docs/17-FUTURE-WORKFLOW-SELECTION.md",
+      "sha256": "d88c02c6c0b56fd1335a792a3e2a5751019baec06f5898cdaf75cca0ea2d18c4",
+      "bytes": 2145
+    },
+    {
+      "path": "docs/18-SECURE-CODING-AND-SDLC.md",
+      "sha256": "21ae97c286fd333889eb50f5fb96a560aa45211405dd06add9b59d8951dd9701",
+      "bytes": 11289
+    },
+    {
+      "path": "docs/19-AGENTIC-AI-SECURITY-REQUIREMENTS.md",
+      "sha256": "5740efb52e05068847f70852a2b629a42025029d504882cb575cac59a5b14e4c",
+      "bytes": 9874
+    },
+    {
+      "path": "docs/20-SECURITY-VERIFICATION-AND-RELEASE-GATES.md",
+      "sha256": "bb89743021d1f60fde70f1a87a65e4a9a98eccdbe839690302c426a3cd30e95b",
+      "bytes": 5343
+    },
+    {
+      "path": "docs/21-SENSITIVE-DATA-ACCESS-GOVERNANCE.md",
+      "sha256": "16c6678e6bf12a1589330a0e108402c0e00cca0e7b7cb3a5d05a17041b8fe8d0",
+      "bytes": 7409
+    },
+    {
+      "path": "docs/adr/0001-product-identity-and-independence.md",
+      "sha256": "4ace06a7e0d3c5301e4ddb9fce02daf444316d0f4823e7556f2ddcc1554f6cae",
+      "bytes": 384
+    },
+    {
+      "path": "docs/adr/0002-single-enforcement-path.md",
+      "sha256": "54112b2e3a3af3230ea4674e1e354875f514b6974898b2a60e14569380e2359e",
+      "bytes": 389
+    },
+    {
+      "path": "docs/adr/0003-use-case-agnostic-baseline.md",
+      "sha256": "a5533c2cb216239ea817dca2d2fecbecbfd4bdf78884c860fee68f5901625588",
+      "bytes": 361
+    },
+    {
+      "path": "docs/adr/0004-deterministic-policy-authority.md",
+      "sha256": "6fcbdd0f4fb93e7e3c0b7a9bce810be86f01979c21d0af198dece6799f8bb4d9",
+      "bytes": 364
+    },
+    {
+      "path": "docs/adr/0005-tamper-evident-evidence.md",
+      "sha256": "9f0fee77c9aa9fbbae87886bd1dbfd5a13c3031e889b9fbe00dc63254aa36dd3",
+      "bytes": 251
+    },
+    {
+      "path": "docs/adr/0006-external-systems-as-adapters.md",
+      "sha256": "383fde8389ee115a783a155b355271a654fc3d945de6cf54fd7a3ed79001a472",
+      "bytes": 288
+    },
+    {
+      "path": "docs/adr/0007-security-standards-and-release-gates.md",
+      "sha256": "fc60444245a92134d1e4d105a6fabc4b1ce7af7beb7cf7a7bd67236fdb7688d2",
+      "bytes": 1346
+    },
+    {
+      "path": "docs/adr/0008-delegated-authority-parameter-bounds-and-sensitive-data.md",
+      "sha256": "b1a32b50c50b240b265fd1c9fcc3908d47dc31fe9d6251f90d25d4fc66366811",
+      "bytes": 1934
+    },
+    {
+      "path": "policies/examples/README.md",
+      "sha256": "4b92f4a99740f6c0771d432e855549cd7b19cccad9d0cd87be2ebbb21d015249",
+      "bytes": 223
+    },
+    {
+      "path": "schemas/action-catalog.schema.json",
+      "sha256": "96db6ae4f78f7c5f5f733f2c86a5259ab2abb3cac2b613ba464495ced7008177",
+      "bytes": 3734
+    },
+    {
+      "path": "schemas/action-request.schema.json",
+      "sha256": "e7416791e0a0b67868d07659645c19331582423c928f80efab44fa1b13b6ebbd",
+      "bytes": 2504
+    },
+    {
+      "path": "schemas/action-result.schema.json",
+      "sha256": "ec898f3325ed907516730dea9069f7984360d5af17f02890c6152be9b4c47df7",
+      "bytes": 949
+    },
+    {
+      "path": "schemas/approval-decision.schema.json",
+      "sha256": "1f90dabd8aa586638b68be44d737d37bad228b00258c0365b5ff79f40e683716",
+      "bytes": 456
+    },
+    {
+      "path": "schemas/approval-record.schema.json",
+      "sha256": "f30ffde5232495c5f9b2aee9f2f1649f43ca61ce668ce1cef8824949bbb88c7f",
+      "bytes": 2153
+    },
+    {
+      "path": "schemas/audit-event.schema.json",
+      "sha256": "b0a991cd12365586b1fa4b88172f13e8fcba39b045299aa47dd9ce9289475a38",
+      "bytes": 2509
+    },
+    {
+      "path": "schemas/authority-context.schema.json",
+      "sha256": "56240fed6ca344bc06bb6395911d3f7f223ce9ccc9bdbcb95276dfc8dd3b25cf",
+      "bytes": 2316
+    },
+    {
+      "path": "schemas/data-access-profile.schema.json",
+      "sha256": "27686880ed9fdf7e12406331cb6cc6e56deb9cefdb093beae528b8789a78a445",
+      "bytes": 2676
+    },
+    {
+      "path": "schemas/evidence-bundle-manifest.schema.json",
+      "sha256": "9a5d4a033bcbbdac15963271a568b45ebb80d919c833c3196518e849594a7300",
+      "bytes": 1629
+    },
+    {
+      "path": "schemas/facts.schema.json",
+      "sha256": "d54fc2d9a357fd00d4d6ef80959f99f157e7e130c58d4a9a4d21e421e1163fd5",
+      "bytes": 586
+    },
+    {
+      "path": "schemas/grant.schema.json",
+      "sha256": "5722d2401ffc099e415f19914e94be0f1b6d864525ccd6811652a0952fca5acc",
+      "bytes": 7439
+    },
+    {
+      "path": "schemas/policy-decision.schema.json",
+      "sha256": "3c140c79e8f0a81422d9261f0432e314f7d8a756baee6d9526e9863217ec014c",
+      "bytes": 1127
+    },
+    {
+      "path": "schemas/policy.schema.json",
+      "sha256": "f7c7aeb7d7d5f1d78444489bf8393fc6e6ae86675ba72c8b421f4c5d885d33f3",
+      "bytes": 3904
+    },
+    {
+      "path": "schemas/problem.schema.json",
+      "sha256": "e02a041d5eeec925b57a5e486e7272f1435718da477898c1649e4b933cf14ba7",
+      "bytes": 765
+    },
+    {
+      "path": "schemas/workflow-start.schema.json",
+      "sha256": "70930e6ecd83ef134bf1f77fd3bbf718c97f5d76e748d1926f6d18159789478b",
+      "bytes": 7392
+    },
+    {
+      "path": "security/standards-baseline.yaml",
+      "sha256": "326be0eb432cadfe6a6a038c08075ee3e8e88af3684544174c3130b22f211fb9",
+      "bytes": 2011
+    },
+    {
+      "path": "test/contracts/authority-data-acceptance.yaml",
+      "sha256": "e54adc8f7d6b8d49f46e1d96048a0a3f2450f6a2f907f2c6377e1387fe12388f",
+      "bytes": 2881
+    },
+    {
+      "path": "test/contracts/core-acceptance.yaml",
+      "sha256": "32fff9c4118e769823929614f77831b54cbb2264174271036c504d2bf0b64812",
+      "bytes": 2885
+    },
+    {
+      "path": "test/contracts/security-acceptance.yaml",
+      "sha256": "3b52d35384d04a4429c7f9153af094ba58bf263e5ad7c3ca6f87000986971425",
+      "bytes": 3401
+    },
+    {
+      "path": "test/fixtures/audit-hash-fixture.json",
+      "sha256": "bcca7a6f6f896e197a65fc4ded6d92c16f6543253e82623e8886886a2e3acfdd",
+      "bytes": 3405
+    },
+    {
+      "path": "test/fixtures/canonical-read-action.json",
+      "sha256": "6275a18e4e85ddba5206813c044796fe6a97813e97c46ab0cd96c1660511deda",
+      "bytes": 465
+    },
+    {
+      "path": "test/fixtures/canonical-workflow-start.json",
+      "sha256": "18d8766a6b8f83c0d51a7bcb2a8362da805d340345b5dcd782c7244bd6a442d7",
+      "bytes": 1249
+    },
+    {
+      "path": "test/fixtures/canonical-write-action.json",
+      "sha256": "203848909dcb9d5e301a01801060b2639a27e437281dfab0cff7a8cde4e4976e",
+      "bytes": 377
+    },
+    {
+      "path": "test/fixtures/conformance-action-catalog.json",
+      "sha256": "5a5e569df09b34648a89af81e1154f09866f0fd1bdca62c9188230c129e7a80c",
+      "bytes": 1559
+    },
+    {
+      "path": "test/fixtures/conformance-data-access-profile-read.json",
+      "sha256": "58203c0e61bc1869204b96f8f43f7a6cfd8ad17ca7333eba67e8dbd6f6902c9a",
+      "bytes": 405
+    },
+    {
+      "path": "test/fixtures/conformance-data-access-profile-write.json",
+      "sha256": "876518c122785479f4eb851d5d0b6f005848ccf2f97bc0697d4d9045f5872e06",
+      "bytes": 404
+    },
+    {
+      "path": "test/fixtures/conformance-policy.json",
+      "sha256": "46ea291b4936e6df584f8535b2692eaa4d676832f246cc4b96d5903bbf5abf7a",
+      "bytes": 823
+    },
+    {
+      "path": "workflow-packs/README.md",
+      "sha256": "b9a10d1a73e2ab8a24fa31bd2ccc90f02f43b4b0133812652e9c5db098e2dd27",
+      "bytes": 341
+    }
+  ]
+}

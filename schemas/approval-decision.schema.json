@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "approval-decision/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "approval-decision/v1"
+    },
+    "decision": {
+      "enum": [
+        "APPROVE",
+        "REJECT"
+      ]
+    },
+    "comment": {
+      "type": "string",
+      "maxLength": 2048
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "action-request/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "tenant_id",
+    "workflow_id",
+    "grant_id",
+    "action",
+    "resource",
+    "payload",
+    "purpose",
+    "destination"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "action-request/v1"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "workflow_id": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128
+    },
+    "grant_id": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128
+    },
+    "action": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+(?:\\.[a-z0-9_-]+)+$",
+      "minLength": 3,
+      "maxLength": 128
+    },
+    "resource": {
+      "type": "object",
+      "maxProperties": 64,
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 512
+          },
+          {
+            "type": "array",
+            "uniqueItems": true,
+            "maxItems": 128,
+            "items": {
+              "type": "string",
+              "maxLength": 512
+            }
+          }
+        ]
+      }
+    },
+    "payload": {
+      "type": "object"
+    },
+    "purpose": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.-]{1,127}$"
+    },
+    "destination": {
+      "enum": [
+        "HUMAN_REVIEW_UI",
+        "INTERNAL_SERVICE",
+        "INTERNAL_AGENT_RUNTIME",
+        "LOCAL_MODEL",
+        "APPROVED_EXTERNAL_MODEL",
+        "EXTERNAL_SERVICE"
+      ]
+    },
+    "requested_data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fields",
+        "categories",
+        "max_records"
+      ],
+      "properties": {
+        "fields": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 1024,
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "categories": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 256,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]{1,127}$"
+          }
+        },
+        "max_records": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

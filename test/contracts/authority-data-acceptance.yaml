@@ -1,0 +1,47 @@
+schema_version: finserv-authority-data-acceptance/v1
+release_baseline: v0.1
+cases:
+  - id: AUTH-001
+    requirement: caller cannot self-assert or replace trusted requesting principal acting actor authority source or delegation chain
+  - id: AUTH-002
+    requirement: each delegation hop is equal to or narrower than parent authority and cannot extend tenant workflow action resource purpose destination data scope bounds or expiry
+  - id: AUTH-003
+    requirement: delegation depth greater than the active grant bound is denied
+  - id: AUTH-004
+    requirement: changing a security-relevant resource or extracted authorization fact after approval invalidates approval
+  - id: AUTH-005
+    requirement: action authorization evaluates declared parameter projection rather than action name alone
+  - id: AUTH-006
+    requirement: action count fan-out and workflow-defined numeric authority bounds fail closed when exceeded
+  - id: AUTH-007
+    requirement: purpose not present in the active grant allowlist is denied
+  - id: AUTH-008
+    requirement: destination not present in the active grant allowlist is denied
+  - id: AUTH-009
+    requirement: authority context digest is bound into approval and evidence lineage
+  - id: AUTH-010
+    requirement: trusted issuer can create a direct non-delegated authority context with an empty delegation chain without widening semantics
+  - id: DATA-001
+    requirement: I1_READ and data sensitivity are evaluated as independent policy inputs
+  - id: DATA-002
+    requirement: D3_RESTRICTED read can require approval or deny despite being non-mutating
+  - id: DATA-003
+    requirement: requested field absent from allowed field or category scope is denied before disclosure
+  - id: DATA-004
+    requirement: explicitly denied field is not returned even when another rule or source response contains it
+  - id: DATA-005
+    requirement: source-side projection is used for sensitive reads when the adapter declares projection capability
+  - id: DATA-006
+    requirement: unexpected sensitive field returned by a downstream source is not disclosed to the caller
+  - id: DATA-007
+    requirement: bulk access is denied unless explicitly enabled and remains within record and byte bounds
+  - id: DATA-008
+    requirement: changing purpose destination requested fields or data sensitivity context after approval invalidates approval
+  - id: DATA-009
+    requirement: raw D2 or D3 values are absent from audit events logs and default evidence exports
+  - id: DATA-010
+    requirement: low-entropy sensitive equality binding uses a keyed commitment rather than plain unsalted SHA-256
+  - id: DATA-011
+    requirement: DATA_DISCLOSED evidence records categories counts purpose destination and lineage without requiring disclosed cleartext
+  - id: DATA-012
+    requirement: data disclosure counters are transactionally enforced under concurrent requests

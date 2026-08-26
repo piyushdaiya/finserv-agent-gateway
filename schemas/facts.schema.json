@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "facts/v1",
+  "type": "object",
+  "propertyNames": {
+    "pattern": "^[a-z][a-z0-9_.-]{0,127}$"
+  },
+  "maxProperties": 256,
+  "additionalProperties": {
+    "oneOf": [
+      {
+        "type": "string",
+        "maxLength": 2048
+      },
+      {
+        "type": "boolean"
+      },
+      {
+        "type": "integer"
+      },
+      {
+        "type": "array",
+        "uniqueItems": true,
+        "maxItems": 256,
+        "items": {
+          "type": "string",
+          "maxLength": 512
+        }
+      }
+    ]
+  }
+}

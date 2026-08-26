@@ -1,0 +1,63 @@
+schema_version: finserv-core-acceptance/v1
+release_baseline: v0.1
+cases:
+  - id: CORE-001
+    requirement: unknown action is denied and executor is not called
+  - id: CORE-002
+    requirement: empty grant action scope denies every action
+  - id: CORE-003
+    requirement: action not present in grant is denied
+  - id: CORE-004
+    requirement: tenant mismatch is denied
+  - id: CORE-005
+    requirement: workflow mismatch is denied
+  - id: CORE-006
+    requirement: actor mismatch is denied
+  - id: CORE-007
+    requirement: expired grant is denied
+  - id: CORE-008
+    requirement: revoked grant is denied
+  - id: CORE-009
+    requirement: duplicate JSON object key is rejected
+  - id: CORE-010
+    requirement: unknown normative request field is rejected
+  - id: CORE-011
+    requirement: unsupported policy operator is rejected at policy activation
+  - id: CORE-012
+    requirement: no matching policy rule produces POLICY_DEFAULT_DENY
+  - id: CORE-013
+    requirement: identical policy inputs deterministically produce identical effect and reason code
+  - id: CORE-014
+    requirement: approval-required mutating action causes zero downstream writes before approval
+  - id: CORE-015
+    requirement: requesting actor cannot approve its own pending action
+  - id: CORE-016
+    requirement: request mutation after approval invalidates approval and causes zero downstream writes
+  - id: CORE-017
+    requirement: grant mutation/replacement after approval invalidates approval
+  - id: CORE-018
+    requirement: action-definition or policy digest change after approval invalidates approval
+  - id: CORE-019
+    requirement: approved action dispatches exactly one downstream write
+  - id: CORE-020
+    requirement: consumed approval cannot dispatch a second downstream write
+  - id: CORE-021
+    requirement: same idempotency key and same normalized request returns stored result without new dispatch
+  - id: CORE-022
+    requirement: same idempotency key and different normalized request returns conflict
+  - id: CORE-023
+    requirement: ambiguous mutating downstream timeout yields EXECUTION_OUTCOME_UNKNOWN and no automatic retry
+  - id: CORE-024
+    requirement: two concurrent dispatch attempts for one action cause at most one adapter dispatch
+  - id: CORE-025
+    requirement: sensitive configured fields are redacted before durable request/result persistence
+  - id: CORE-026
+    requirement: audit hash chain fixture reproduces exact expected hashes
+  - id: CORE-027
+    requirement: modification or deletion inside an exported audit sequence is detected during replay
+  - id: CORE-028
+    requirement: offline replay opens no network sockets and invokes no adapter
+  - id: CORE-029
+    requirement: caller credential cannot invoke grant-issuer or reviewer operations
+  - id: CORE-030
+    requirement: workflow pack cannot invoke a governed adapter outside the executor broker
