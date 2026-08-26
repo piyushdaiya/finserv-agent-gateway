@@ -1,0 +1,53 @@
+schema_version: finserv-security-standards/v1
+baseline: v0.1
+as_of: 2026-08-26
+standards:
+  - id: OWASP-ASVS
+    version: 5.0.0
+    role: application_security_verification
+    requirement: mandatory_applicability_review
+    target: level_2_minimum_before_production
+    note: high-impact I3 workflows must assess applicable Level 3 requirements
+  - id: OWASP-TOP10-WEB
+    version: '2025'
+    role: web_application_threat_baseline
+    requirement: mandatory
+  - id: OWASP-API-TOP10
+    version: '2023'
+    role: api_security_threat_baseline
+    requirement: mandatory
+  - id: OWASP-AGENTIC-TOP10
+    version: '2026'
+    role: agentic_application_threat_baseline
+    requirement: mandatory_for_agentic_integrations
+  - id: OWASP-GENAI-LLM-TOP10
+    version: '2026'
+    role: llm_genai_threat_baseline
+    requirement: mandatory_when_llm_or_genai_in_scope
+  - id: NIST-SP-800-218
+    version: '1.1'
+    role: secure_software_development_framework
+    requirement: mandatory_process_baseline
+  - id: NIST-SP-800-218A
+    version: 'final-2024'
+    role: genai_ssdf_community_profile
+    requirement: conditional_when_model_or_genai_component_is_built_or_shipped
+  - id: NIST-AI-600-1
+    version: '2024'
+    role: genai_risk_management_profile
+    requirement: informative_for_genai_workflow_risk_review
+  - id: SLSA
+    version: '1.2'
+    role: software_supply_chain
+    requirement: mandatory_release_reference
+    target: build_l2_minimum_for_public_or_production_release
+  - id: CISA-SECURE-BY-DESIGN
+    version: 'current-as-of-2026-08-26'
+    role: secure_by_design_product_principles
+    requirement: mandatory_design_posture
+claims_policy:
+  blanket_compliance_claims: prohibited
+  versioned_crosswalk_required: true
+  evidence_required: true
+  not_applicable_requires_rationale: true
+  unavailable_control_status: fail_or_not_proven_not_pass

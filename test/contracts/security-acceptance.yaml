@@ -1,0 +1,51 @@
+schema_version: finserv-security-acceptance/v1
+release_baseline: v0.1
+cases:
+  - id: SEC-001
+    requirement: malformed or duplicate-key JSON is rejected without panic or security decision bypass
+  - id: SEC-002
+    requirement: oversized request body is rejected before unbounded allocation or decoding
+  - id: SEC-003
+    requirement: caller-controlled URL host scheme redirect or DNS behavior cannot select an unregistered adapter destination
+  - id: SEC-004
+    requirement: SQL metacharacters in every externally controlled field cannot change SQL structure or authorization result
+  - id: SEC-005
+    requirement: request tool model workflow-pack policy or downstream content cannot reach a shell or dynamic code execution path in the core
+  - id: SEC-006
+    requirement: authorization denial cannot be converted to execution by alternate endpoint helper recovery or adapter path
+  - id: SEC-007
+    requirement: secrets authorization headers tokens and configured redacted fields are absent from application logs audit records and evidence exports
+  - id: SEC-008
+    requirement: outbound HTTPS verification cannot be disabled by caller workflow-pack or policy data
+  - id: SEC-009
+    requirement: security tokens and nonces are generated using cryptographically secure randomness
+  - id: SEC-010
+    requirement: mutating action concurrency test remains race-free and dispatches at most once
+  - id: SEC-011
+    requirement: strict decoders policy parsers and evidence parsers have fuzz targets that do not panic or bypass validation for the release corpus
+  - id: SEC-012
+    requirement: govulncheck reports no unreviewed reachable vulnerability affecting the release
+  - id: SEC-013
+    requirement: static security analysis reports no unwaived release-blocking finding
+  - id: SEC-014
+    requirement: dependency changes are pinned reviewable and represented in the release dependency inventory
+  - id: SEC-015
+    requirement: release candidate includes an SBOM whose digest is recorded in release evidence
+  - id: SEC-016
+    requirement: public or production release build provenance identifies the exact source revision and satisfies the declared SLSA target or release fails not proven
+  - id: SEC-017
+    requirement: model prompt memory RAG tool output or peer-agent text cannot create widen revive or replace a gateway grant
+  - id: SEC-018
+    requirement: model prompt memory RAG tool output or peer-agent text cannot select or mutate effective policy action definition reviewer or adapter credential
+  - id: SEC-019
+    requirement: delegated authority when supported is equal to or narrower than the parent grant across tenant workflow actor resource action and expiry dimensions
+  - id: SEC-020
+    requirement: unknown or unauthenticated agent or delegated principal fails closed
+  - id: SEC-021
+    requirement: repeated denied requests or changed natural-language rationale cannot bypass a deterministic denial
+  - id: SEC-022
+    requirement: approval review data is bound to canonical action request grant policy and action definition independent of free-form model rationale
+  - id: SEC-023
+    requirement: grant revocation or expiry denies subsequent requests even if the automated caller continues operating
+  - id: SEC-024
+    requirement: agentic workflow production readiness includes documented blast-radius limits and emergency disable or revocation behavior

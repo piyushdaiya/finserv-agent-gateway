@@ -2,8 +2,13 @@
   "schema_version": "finserv-design-manifest/v1",
   "product": "FinServ Agent Gateway",
   "baseline": "v0.1",
-  "scope": "use-case-agnostic product design and contracts",
+  "scope": "use-case-agnostic product design, contracts, secure coding, agentic security, and release gates",
   "files": [
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "785446d20151a985948c66413bb2f37fb3b1288bf3315ed406a7297cacdbb4bc",
+      "bytes": 1214
+    },
     {
       "path": "LICENSE-NOTE.md",
       "sha256": "23766de463a563904ac6e12b00b1f1311bca6d07034b29eec0e3fb61b27f3b53",
@@ -26,8 +31,8 @@
     },
     {
       "path": "docs/00-DESIGN-BASELINE-INDEX.md",
-      "sha256": "7373ed16918d841c4b7c26d8a2bee06a91690953b54512362a59a895c1144be2",
-      "bytes": 2795
+      "sha256": "f9a09c4414e0de11b5c78972fe72081a42ef743541433671dbda1a3ecc294a54",
+      "bytes": 3385
     },
     {
       "path": "docs/01-PRODUCT-CHARTER.md",
@@ -115,6 +120,21 @@
       "bytes": 2145
     },
     {
+      "path": "docs/18-SECURE-CODING-AND-SDLC.md",
+      "sha256": "9f99d23d6db39e99a27d5e59e5e51f6a8da82456755ced23facfc9ab7e920f8d",
+      "bytes": 10656
+    },
+    {
+      "path": "docs/19-AGENTIC-AI-SECURITY-REQUIREMENTS.md",
+      "sha256": "ac77544a151724bbef97cb5d14f54fdfc07165207a41a9a66fcf2e481a64afae",
+      "bytes": 9284
+    },
+    {
+      "path": "docs/20-SECURITY-VERIFICATION-AND-RELEASE-GATES.md",
+      "sha256": "4ce892f1c74800a2df7bdfb41e1be995c61437131b96ac6a966ec349aa2d745f",
+      "bytes": 5012
+    },
+    {
       "path": "docs/adr/0001-product-identity-and-independence.md",
       "sha256": "4ace06a7e0d3c5301e4ddb9fce02daf444316d0f4823e7556f2ddcc1554f6cae",
       "bytes": 384
@@ -143,6 +163,11 @@
       "path": "docs/adr/0006-external-systems-as-adapters.md",
       "sha256": "383fde8389ee115a783a155b355271a654fc3d945de6cf54fd7a3ed79001a472",
       "bytes": 288
+    },
+    {
+      "path": "docs/adr/0007-security-standards-and-release-gates.md",
+      "sha256": "361bc2e8768036cbc8f89f0fbf62b9e0475a6fa222b3aed952f442bc64bbae06",
+      "bytes": 1297
     },
     {
       "path": "policies/examples/README.md",
@@ -215,9 +240,19 @@
       "bytes": 1554
     },
     {
+      "path": "security/standards-baseline.yaml",
+      "sha256": "1ff5544cc3afbe28b13c4c0cd93e2231936a4aef413428dfc59e0e8f0065c610",
+      "bytes": 1847
+    },
+    {
       "path": "test/contracts/core-acceptance.yaml",
       "sha256": "32fff9c4118e769823929614f77831b54cbb2264174271036c504d2bf0b64812",
       "bytes": 2885
+    },
+    {
+      "path": "test/contracts/security-acceptance.yaml",
+      "sha256": "3b52d35384d04a4429c7f9153af094ba58bf263e5ad7c3ca6f87000986971425",
+      "bytes": 3401
     },
     {
       "path": "test/fixtures/audit-hash-fixture.json",

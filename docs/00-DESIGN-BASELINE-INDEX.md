@@ -21,10 +21,16 @@ This baseline is the normative product specification for the first implementatio
 13. `14-IMPLEMENTATION-BLUEPRINT.md`
 14. `15-ERROR-AND-REASON-CODES.md`
 15. `16-REPOSITORY-AND-PROJECT-BOUNDARY.md`
-16. ADRs under `docs/adr/`
-17. schemas under `schemas/`
-18. `api/openapi.yaml`
-19. conformance contract `test/contracts/core-acceptance.yaml`
+16. `18-SECURE-CODING-AND-SDLC.md`
+17. `19-AGENTIC-AI-SECURITY-REQUIREMENTS.md`
+18. `20-SECURITY-VERIFICATION-AND-RELEASE-GATES.md`
+19. ADRs under `docs/adr/`
+20. schemas under `schemas/`
+21. `api/openapi.yaml`
+22. conformance contract `test/contracts/core-acceptance.yaml`
+23. security conformance contract `test/contracts/security-acceptance.yaml`
+24. version-pinned security registry `security/standards-baseline.yaml`
+25. `CONTRIBUTING.md`
 
 `12-EXTERNAL-DESIGN-LEARNINGS.md` and `17-FUTURE-WORKFLOW-SELECTION.md` are informative unless a later ADR promotes specific statements to normative requirements.
 
@@ -56,7 +62,11 @@ The first implementation MUST have:
 - append-only tamper-evident audit events;
 - deterministic evidence bundle export;
 - offline replay that performs no network or downstream actions;
-- a workflow-pack boundary that cannot bypass core enforcement.
+- a workflow-pack boundary that cannot bypass core enforcement;
+- secure coding and SDLC gates as defined in `18-SECURE-CODING-AND-SDLC.md`;
+- version-pinned OWASP/NIST/SLSA security applicability and evidence requirements;
+- agent/model/tool output treated as untrusted input and never as authority;
+- mandatory security acceptance and release gates.
 
 ## Explicitly not frozen
 
