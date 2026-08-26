@@ -21,7 +21,7 @@
     },
     {
       "path": "api/openapi.yaml",
-      "sha256": "ce7d53e95445aa5e4a859a5f48ffbc2dbbf5b919608337e16a0dc197a89ab9b1",
+      "sha256": "079bc7bbd5b268484f8d3632c0586ced410741742c2df6bd498ed7e256407c35",
       "bytes": 4865
     },
     {
@@ -66,8 +66,8 @@
     },
     {
       "path": "docs/07-API-CONTRACT.md",
-      "sha256": "7451b6d9abdef7b9c61ec91b581e51487afcebbf22f0e938aeb56ac4da08d1fd",
-      "bytes": 2858
+      "sha256": "686c98658b462a31a69d04ca058efc83bc88906c6172c088eda5391ca484c383",
+      "bytes": 3308
     },
     {
       "path": "docs/08-STORAGE-AND-DATA-MODEL.md",
@@ -178,6 +178,11 @@
       "path": "docs/adr/0008-delegated-authority-parameter-bounds-and-sensitive-data.md",
       "sha256": "b1a32b50c50b240b265fd1c9fcc3908d47dc31fe9d6251f90d25d4fc66366811",
       "bytes": 1934
+    },
+    {
+      "path": "docs/adr/0009-openapi-3.1-json-schema-alignment.md",
+      "sha256": "422e91f6e0fee4e5b2888bb43c37619935f9cbaeb5bedc994f11b4cbeb71b807",
+      "bytes": 2029
     },
     {
       "path": "policies/examples/README.md",
