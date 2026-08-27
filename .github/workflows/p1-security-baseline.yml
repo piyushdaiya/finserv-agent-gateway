@@ -1,0 +1,97 @@
+name: p1-security-baseline
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-security-baseline:
+    name: p1-security-baseline
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      HAEP_EXPECTED_REPOSITORY: piyushdaiya/finserv-agent-gateway
+      HAEP_HEAD_REPOSITORY: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}
+      HAEP_EXPECTED_HEAD_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+      HAEP_EXPECTED_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.sha }}
+
+    steps:
+      - name: Acquire and bind exact trusted-event source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          fail() {
+            echo "SOURCE_ACQUISITION=FAIL"
+            echo "SOURCE_ACQUISITION_FAILURE=$1"
+            exit 7
+          }
+
+          [ "$GITHUB_REPOSITORY" = "$HAEP_EXPECTED_REPOSITORY" ] || fail "UNEXPECTED_REPOSITORY"
+          [ "$HAEP_HEAD_REPOSITORY" = "$HAEP_EXPECTED_REPOSITORY" ] || fail "SOURCE_OUTSIDE_TARGET_REPOSITORY"
+
+          case "$HAEP_EXPECTED_HEAD_SHA" in
+            [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]) ;;
+            *) fail "INVALID_HEAD_SHA" ;;
+          esac
+
+          case "$HAEP_EXPECTED_BASE_SHA" in
+            [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]) ;;
+            *) fail "INVALID_BASE_SHA" ;;
+          esac
+
+          cd "$GITHUB_WORKSPACE" || fail "WORKSPACE_CD_FAILED"
+          git init -q . || fail "GIT_INIT_FAILED"
+          git remote add origin "https://github.com/piyushdaiya/finserv-agent-gateway.git" || fail "REMOTE_ADD_FAILED"
+
+          AUTH_B64="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+          [ -n "$AUTH_B64" ] || fail "TOKEN_HEADER_BUILD_FAILED"
+
+          if [ "$HAEP_EXPECTED_BASE_SHA" != "$HAEP_EXPECTED_HEAD_SHA" ]; then
+            git -c http.extraheader="AUTHORIZATION: basic $AUTH_B64" \
+              fetch --quiet --no-tags --depth=1 origin "$HAEP_EXPECTED_BASE_SHA" ||
+              fail "BASE_FETCH_FAILED"
+            FETCHED_BASE="$(git rev-parse FETCH_HEAD 2>/dev/null)" || fail "BASE_FETCH_HEAD_READ_FAILED"
+            [ "$FETCHED_BASE" = "$HAEP_EXPECTED_BASE_SHA" ] || fail "BASE_FETCH_MISMATCH"
+          fi
+
+          git -c http.extraheader="AUTHORIZATION: basic $AUTH_B64" \
+            fetch --quiet --no-tags --depth=1 origin "$HAEP_EXPECTED_HEAD_SHA" ||
+            fail "HEAD_FETCH_FAILED"
+          FETCHED_HEAD="$(git rev-parse FETCH_HEAD 2>/dev/null)" || fail "HEAD_FETCH_HEAD_READ_FAILED"
+          [ "$FETCHED_HEAD" = "$HAEP_EXPECTED_HEAD_SHA" ] || fail "HEAD_FETCH_MISMATCH"
+
+          unset AUTH_B64
+          git checkout --quiet --detach "$HAEP_EXPECTED_HEAD_SHA" || fail "DETACHED_CHECKOUT_FAILED"
+          ACTUAL_HEAD="$(git rev-parse HEAD 2>/dev/null)" || fail "HEAD_READ_FAILED"
+          [ "$ACTUAL_HEAD" = "$HAEP_EXPECTED_HEAD_SHA" ] || fail "CHECKOUT_HEAD_MISMATCH"
+
+          echo "SOURCE_ACQUISITION=PASS"
+          echo "SOURCE_ACQUISITION_HEAD=$ACTUAL_HEAD"
+
+      - name: Verify local source binding
+        shell: bash
+        run: |
+          /bin/bash scripts/ci/bootstrap-source.sh
+
+      - name: Install P1B-qualified toolchain
+        shell: bash
+        run: |
+          /bin/bash scripts/ci/install-qualified-tools.sh
+
+      - name: Run P1 security baseline
+        shell: bash
+        run: |
+          /bin/bash scripts/ci/run-security-baseline.sh
