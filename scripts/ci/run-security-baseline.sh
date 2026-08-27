@@ -40,9 +40,19 @@ RC=$?
 # Exact qualified tool versions remain mandatory even in pre-code mode.
 [ "$(go version | awk '{print $3}')" = "go1.26.7" ] || fail "GO_VERSION_MISMATCH"
 staticcheck -version 2>&1 | grep -F "2026.1" >/dev/null 2>&1 || fail "STATICCHECK_VERSION_MISMATCH"
-go version -m "$(command -v staticcheck)" | grep -F "honnef.co/go/tools v0.7.0" >/dev/null 2>&1 || fail "STATICCHECK_MODULE_BINDING_MISMATCH"
-go version -m "$(command -v govulncheck)" | grep -F "golang.org/x/vuln v1.7.0" >/dev/null 2>&1 || fail "GOVULNCHECK_MODULE_BINDING_MISMATCH"
-go version -m "$(command -v gosec)" | grep -F "github.com/securego/gosec/v2 v2.28.0" >/dev/null 2>&1 || fail "GOSEC_MODULE_BINDING_MISMATCH"
+verify_go_module_binding() {
+  BINARY="$1"
+  MODULE="$2"
+  VERSION="$3"
+  go version -m "$BINARY" | awk -v module="$MODULE" -v version="$VERSION" '
+    $1 == "mod" && $2 == module && $3 == version { found=1 }
+    END { exit found ? 0 : 1 }
+  '
+}
+
+verify_go_module_binding "$(command -v staticcheck)" "honnef.co/go/tools" "v0.7.0" || fail "STATICCHECK_MODULE_BINDING_MISMATCH"
+verify_go_module_binding "$(command -v govulncheck)" "golang.org/x/vuln" "v1.7.0" || fail "GOVULNCHECK_MODULE_BINDING_MISMATCH"
+verify_go_module_binding "$(command -v gosec)" "github.com/securego/gosec/v2" "v2.28.0" || fail "GOSEC_MODULE_BINDING_MISMATCH"
 gitleaks version 2>&1 | grep -F "8.30.1" >/dev/null 2>&1 || fail "GITLEAKS_VERSION_MISMATCH"
 syft version 2>&1 | grep -F "1.51.0" >/dev/null 2>&1 || fail "SYFT_VERSION_MISMATCH"
 
