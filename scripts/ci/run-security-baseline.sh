@@ -363,9 +363,14 @@ EOF_KIN_GO
 
   (
     cd "$KIN_TMP" || exit 41
-    go mod download
+    go mod download github.com/getkin/kin-openapi@v0.147.0
     RC=$?
     [ "$RC" -eq 0 ] || exit 42
+    go mod tidy
+    RC=$?
+    [ "$RC" -eq 0 ] || exit 42
+    ACTUAL_KIN_VERSION="$(go list -m -f '{{.Version}}' github.com/getkin/kin-openapi 2>/dev/null)"
+    [ "$ACTUAL_KIN_VERSION" = "v0.147.0" ] || exit 42
     go build -trimpath -o "$KIN_TMP/validator" .
   )
   RC=$?
