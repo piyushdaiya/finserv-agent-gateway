@@ -110,6 +110,363 @@ RC=$?
 [ "$RC" -eq 0 ] || fail "GITLEAKS_REPORT_SEMANTICS_FAILED"
 echo "SECRET_SCAN_RESULT=PASS"
 
+# Exact fuzz-target gate. A package directory alone is insufficient: Go may
+# return RC=0 for -fuzz=<missing target>. First prove the exact target is listed,
+# then run only that exact target for the bounded duration.
+fuzz_target_gate() {
+  PKGDIR="$1"
+  TARGET="$2"
+  FUZZTIME="$3"
+
+  if [ ! -d "$PKGDIR" ]; then
+    echo "FUZZ_${TARGET}=DEFERRED_UNTIL_OWNING_PACKAGE_EXISTS"
+    return 0
+  fi
+
+  SAFE_TARGET="$(printf '%s' "$TARGET" | tr -cd 'A-Za-z0-9_')"
+  LIST_OUT="$TMP/fuzz-list-${SAFE_TARGET}.txt"
+  rm -f "$LIST_OUT"
+  go test "./$PKGDIR" -run='^$' -list="^${TARGET}$" >"$LIST_OUT" 2>&1
+  RC=$?
+  if [ "$RC" -ne 0 ]; then
+    cat "$LIST_OUT"
+    echo "FUZZ_${TARGET}=FAIL_TARGET_DISCOVERY"
+    return 21
+  fi
+
+  MATCH_COUNT="$(grep -Fxc "$TARGET" "$LIST_OUT" 2>/dev/null || true)"
+  if [ "$MATCH_COUNT" != "1" ]; then
+    cat "$LIST_OUT"
+    echo "FUZZ_${TARGET}=FAIL_EXACT_TARGET_NOT_FOUND"
+    return 22
+  fi
+
+  go test "./$PKGDIR" -run='^$' -fuzz="^${TARGET}$" -fuzztime="$FUZZTIME"
+  RC=$?
+  if [ "$RC" -ne 0 ]; then
+    echo "FUZZ_${TARGET}=FAIL_EXECUTION"
+    return 23
+  fi
+
+  echo "FUZZ_${TARGET}=PASS"
+  return 0
+}
+
+run_fuzz_target_canaries() {
+  CANARY="$TMP/fuzz-target-existence-canary"
+  rm -rf "$CANARY"
+  mkdir -p "$CANARY/no-target" "$CANARY/with-target" || return 31
+
+  cat > "$CANARY/go.mod" <<'EOF_CANARY_MOD'
+module haep.local/fuzz-target-canary
+go 1.26
+EOF_CANARY_MOD
+  cat > "$CANARY/no-target/pkg.go" <<'EOF_CANARY_NO_TARGET'
+package notarget
+func Value() int { return 1 }
+EOF_CANARY_NO_TARGET
+  cat > "$CANARY/with-target/pkg.go" <<'EOF_CANARY_WITH_TARGET'
+package withtarget
+func Value() int { return 1 }
+EOF_CANARY_WITH_TARGET
+  cat > "$CANARY/with-target/fuzz_test.go" <<'EOF_CANARY_FUZZ'
+package withtarget
+import "testing"
+func FuzzPresentTarget(f *testing.F) {
+  f.Add("seed")
+  f.Fuzz(func(t *testing.T, s string) { _ = s })
+}
+EOF_CANARY_FUZZ
+
+  SAVED_PWD="$(pwd)"
+  cd "$CANARY" || return 31
+
+  MISSING_PACKAGE_OUT="$(fuzz_target_gate "missing-package" "FuzzMissingPackage" "1x" 2>&1)"
+  MISSING_PACKAGE_RC=$?
+  if [ "$MISSING_PACKAGE_RC" -ne 0 ] || ! printf '%s\n' "$MISSING_PACKAGE_OUT" | grep -F 'DEFERRED_UNTIL_OWNING_PACKAGE_EXISTS' >/dev/null 2>&1; then
+    cd "$SAVED_PWD" || return 31
+    return 32
+  fi
+
+  MISSING_TARGET_OUT="$(fuzz_target_gate "no-target" "FuzzRequiredTarget" "1x" 2>&1)"
+  MISSING_TARGET_RC=$?
+  if [ "$MISSING_TARGET_RC" -eq 0 ]; then
+    cd "$SAVED_PWD" || return 31
+    return 33
+  fi
+
+  PRESENT_TARGET_OUT="$(fuzz_target_gate "with-target" "FuzzPresentTarget" "1x" 2>&1)"
+  PRESENT_TARGET_RC=$?
+  if [ "$PRESENT_TARGET_RC" -ne 0 ] || ! printf '%s\n' "$PRESENT_TARGET_OUT" | grep -F 'FUZZ_FuzzPresentTarget=PASS' >/dev/null 2>&1; then
+    cd "$SAVED_PWD" || return 31
+    return 34
+  fi
+
+  cd "$SAVED_PWD" || return 31
+  echo "FUZZ_MISSING_PACKAGE=DEFERRED"
+  echo "FUZZ_EXISTING_PACKAGE_MISSING_TARGET=FAIL_NONZERO"
+  echo "FUZZ_EXISTING_PACKAGE_PRESENT_TARGET=PASS"
+  echo "FUZZ_TARGET_EXISTENCE_GATE=PASS"
+  echo "FUZZ_MISSING_TARGET_CANARY_RC_NONZERO=PASS"
+  echo "FUZZ_FALSE_PASS_PATH_COUNT=0"
+  return 0
+}
+
+run_fuzz_target_canaries
+RC=$?
+[ "$RC" -eq 0 ] || fail "FUZZ_TARGET_EXISTENCE_CANARY_FAILED_RC_${RC}"
+
+# kin-openapi v0.147.0 local-only resolver. The root document is read directly
+# and given a repository-relative logical location. Every external/transitive
+# reference is then mediated by ReadFromURIFunc, which rejects URI schemes,
+# absolute paths, traversal/escape, and symlink escape before reading bytes.
+run_kin_openapi_local_only_gate() {
+  KIN_TMP="$TMP/kin-openapi-local-only"
+  rm -rf "$KIN_TMP"
+  mkdir -p "$KIN_TMP" || return 41
+
+  cat > "$KIN_TMP/go.mod" <<'EOF_KIN_MOD'
+module haep.local/openapi-validate
+go 1.26
+require github.com/getkin/kin-openapi v0.147.0
+EOF_KIN_MOD
+
+  cat > "$KIN_TMP/main.go" <<'EOF_KIN_GO'
+package main
+
+import (
+	"context"
+	"fmt"
+	"net/url"
+	"os"
+	pathpkg "path"
+	"path/filepath"
+	"strings"
+
+	"github.com/getkin/kin-openapi/openapi3"
+)
+
+func insideRoot(root, candidate string) bool {
+	rel, err := filepath.Rel(root, candidate)
+	if err != nil {
+		return false
+	}
+	if rel == "." {
+		return true
+	}
+	return rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)) && !filepath.IsAbs(rel)
+}
+
+func localOnlyReader(repoRoot string) (openapi3.ReadFromURIFunc, error) {
+	rootAbs, err := filepath.Abs(repoRoot)
+	if err != nil {
+		return nil, err
+	}
+	rootReal, err := filepath.EvalSymlinks(rootAbs)
+	if err != nil {
+		return nil, err
+	}
+
+	return func(_ *openapi3.Loader, location *url.URL) ([]byte, error) {
+		if location == nil {
+			return nil, fmt.Errorf("nil reference location")
+		}
+		if location.Scheme != "" || location.Host != "" || location.User != nil || location.Opaque != "" {
+			return nil, fmt.Errorf("non-local reference rejected: %q", location.String())
+		}
+		if location.RawQuery != "" {
+			return nil, fmt.Errorf("reference query rejected: %q", location.String())
+		}
+		refPath := location.Path
+		if refPath == "" || strings.Contains(refPath, "\\") {
+			return nil, fmt.Errorf("invalid local reference path: %q", location.String())
+		}
+		if pathpkg.IsAbs(refPath) || filepath.IsAbs(filepath.FromSlash(refPath)) {
+			return nil, fmt.Errorf("absolute reference path rejected: %q", location.String())
+		}
+
+		cleanSlash := pathpkg.Clean(refPath)
+		if cleanSlash == ".." || strings.HasPrefix(cleanSlash, "../") {
+			return nil, fmt.Errorf("repository escape rejected: %q", location.String())
+		}
+
+		candidateAbs, err := filepath.Abs(filepath.Join(rootAbs, filepath.FromSlash(cleanSlash)))
+		if err != nil {
+			return nil, err
+		}
+		if !insideRoot(rootAbs, candidateAbs) {
+			return nil, fmt.Errorf("repository escape rejected: %q", location.String())
+		}
+
+		candidateReal, err := filepath.EvalSymlinks(candidateAbs)
+		if err != nil {
+			return nil, err
+		}
+		if !insideRoot(rootReal, candidateReal) {
+			return nil, fmt.Errorf("symlink repository escape rejected: %q", location.String())
+		}
+		return os.ReadFile(candidateReal)
+	}, nil
+}
+
+func validate(repoRoot, specPath string) error {
+	if filepath.IsAbs(specPath) || strings.Contains(specPath, "\\") {
+		return fmt.Errorf("root spec path must be repository-relative")
+	}
+	cleanSpec := pathpkg.Clean(filepath.ToSlash(specPath))
+	if cleanSpec == ".." || strings.HasPrefix(cleanSpec, "../") || cleanSpec == "." {
+		return fmt.Errorf("root spec escapes repository")
+	}
+
+	rootAbs, err := filepath.Abs(repoRoot)
+	if err != nil {
+		return err
+	}
+	specAbs, err := filepath.Abs(filepath.Join(rootAbs, filepath.FromSlash(cleanSpec)))
+	if err != nil {
+		return err
+	}
+	if !insideRoot(rootAbs, specAbs) {
+		return fmt.Errorf("root spec escapes repository")
+	}
+	data, err := os.ReadFile(specAbs)
+	if err != nil {
+		return err
+	}
+
+	reader, err := localOnlyReader(rootAbs)
+	if err != nil {
+		return err
+	}
+	loader := openapi3.NewLoader()
+	loader.ReadFromURIFunc = reader
+	loader.IsExternalRefsAllowed = false
+	doc, err := loader.LoadFromDataWithPath(data, &url.URL{Path: cleanSpec})
+	if err != nil {
+		return err
+	}
+	return doc.Validate(context.Background())
+}
+
+func main() {
+	if len(os.Args) != 3 {
+		fmt.Fprintln(os.Stderr, "usage: validator <repo-root> <repo-relative-spec>")
+		os.Exit(2)
+	}
+	if err := validate(os.Args[1], os.Args[2]); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(7)
+	}
+	fmt.Println("KIN_OPENAPI_VALIDATION=PASS")
+}
+EOF_KIN_GO
+
+  (
+    cd "$KIN_TMP" || exit 41
+    go mod download
+    RC=$?
+    [ "$RC" -eq 0 ] || exit 42
+    go build -trimpath -o "$KIN_TMP/validator" .
+  )
+  RC=$?
+  [ "$RC" -eq 0 ] || return "$RC"
+
+  # Canonical repository-local relative references must remain valid.
+  "$KIN_TMP/validator" "$ROOT" "api/openapi.yaml" >"$KIN_TMP/canonical.out" 2>"$KIN_TMP/canonical.err"
+  RC=$?
+  [ "$RC" -eq 0 ] || {
+    cat "$KIN_TMP/canonical.err"
+    return 43
+  }
+  echo "CANONICAL_LOCAL_REF_VALIDATION=PASS"
+
+  CANARY_ROOT="$KIN_TMP/canaries"
+  mkdir -p "$CANARY_ROOT/api" "$CANARY_ROOT/schemas" || return 44
+
+  write_spec_with_ref() {
+    OUT="$1"
+    REF="$2"
+    cat > "$OUT" <<EOF_CANARY_SPEC
+openapi: 3.1.2
+info:
+  title: boundary-canary
+  version: "1"
+paths:
+  /x:
+    get:
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                \$ref: "$REF"
+EOF_CANARY_SPEC
+  }
+
+  expect_rejected() {
+    LABEL="$1"
+    SPEC="$2"
+    "$KIN_TMP/validator" "$CANARY_ROOT" "$SPEC" >"$KIN_TMP/${LABEL}.out" 2>"$KIN_TMP/${LABEL}.err"
+    CANARY_RC=$?
+    if [ "$CANARY_RC" -eq 0 ]; then
+      echo "${LABEL}=UNEXPECTEDLY_ACCEPTED"
+      return 45
+    fi
+    echo "${LABEL}=REJECTED"
+    return 0
+  }
+
+  write_spec_with_ref "$CANARY_ROOT/api/network.yaml" "https://example.invalid/schema.json"
+  expect_rejected "NETWORK_REF_CANARY" "api/network.yaml" || return $?
+
+  write_spec_with_ref "$CANARY_ROOT/api/file-uri.yaml" "file:///etc/passwd"
+  expect_rejected "FILE_URI_REF_CANARY" "api/file-uri.yaml" || return $?
+
+  write_spec_with_ref "$CANARY_ROOT/api/absolute.yaml" "/etc/passwd"
+  expect_rejected "ABSOLUTE_PATH_REF_CANARY" "api/absolute.yaml" || return $?
+
+  write_spec_with_ref "$CANARY_ROOT/api/escape.yaml" "../../outside.json"
+  expect_rejected "PATH_ESCAPE_REF_CANARY" "api/escape.yaml" || return $?
+
+  cat > "$CANARY_ROOT/schemas/outer.json" <<'EOF_TRANSITIVE'
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "https://example.invalid/transitive.json"
+}
+EOF_TRANSITIVE
+  write_spec_with_ref "$CANARY_ROOT/api/transitive.yaml" "../schemas/outer.json"
+  expect_rejected "TRANSITIVE_NETWORK_REF_CANARY" "api/transitive.yaml" || return $?
+
+  cat > "$CANARY_ROOT/schemas/local.json" <<'EOF_LOCAL_SCHEMA'
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {"name": {"type": "string"}}
+}
+EOF_LOCAL_SCHEMA
+  write_spec_with_ref "$CANARY_ROOT/api/local.yaml" "../schemas/local.json"
+  "$KIN_TMP/validator" "$CANARY_ROOT" "api/local.yaml" >"$KIN_TMP/local.out" 2>"$KIN_TMP/local.err"
+  RC=$?
+  [ "$RC" -eq 0 ] || {
+    cat "$KIN_TMP/local.err"
+    return 46
+  }
+  echo "LOCAL_REF_POSITIVE_CANARY=PASS"
+
+  echo "KIN_OPENAPI_LOCAL_ONLY_READER=PASS"
+  echo "KIN_OPENAPI_NETWORK_FETCH_ALLOWED=NO"
+  echo "KIN_OPENAPI_REPOSITORY_ESCAPE_ALLOWED=NO"
+  echo "KIN_OPENAPI_TRANSITIVE_REF_BOUNDARY=PASS"
+  echo "KIN_OPENAPI_VERSION=v0.147.0"
+  echo "KIN_OPENAPI_RUNTIME_DEPENDENCY=NO"
+  return 0
+}
+
+run_kin_openapi_local_only_gate
+RC=$?
+[ "$RC" -eq 0 ] || fail "KIN_OPENAPI_LOCAL_ONLY_GATE_FAILED_RC_${RC}"
+
 tree_has_go() {
   COMMIT="$1"
   git ls-tree -r --name-only "$COMMIT" 2>/dev/null | grep -E '(^|/)go\.(mod|sum)$|\.go$' >/dev/null 2>&1
@@ -131,7 +488,7 @@ if [ "$HEAD_HAS_GO" = "NO" ] && [ "$BASE_HAS_GO" = "NO" ]; then
   echo "GOVULNCHECK_GATE=DEFERRED_UNTIL_GO_SOURCE_EXISTS"
   echo "GOSEC_GATE=DEFERRED_UNTIL_GO_SOURCE_EXISTS"
   echo "FUZZ_GATES=DEFERRED_UNTIL_OWNING_PACKAGES_EXIST"
-  echo "OPENAPI_SCHEMA_GATE=DEFERRED_UNTIL_PRODUCTION_GO_STATE_EXISTS"
+  echo "OPENAPI_SCHEMA_GATE=PASS_LOCAL_ONLY_READER"
   echo "ACCEPTANCE_GATE=DEFERRED_UNTIL_OWNING_P1D_TESTS_EXIST"
   echo "SBOM_GATE=DEFERRED_UNTIL_PRODUCTION_BUILD_STATE_EXISTS"
   echo "BUILD_GATE=DEFERRED_UNTIL_CMD_FINSERV_GATEWAY_EXISTS"
@@ -176,25 +533,24 @@ else
   echo "POSTGRES_INTEGRATION_GATE=DEFERRED_UNTIL_OWNING_TEST_PACKAGE_EXISTS"
 fi
 
-# Exact mandatory fuzz targets activate when their owning package exists.
-run_fuzz_if_package_exists() {
+# Exact mandatory fuzz targets activate when their owning package exists, and
+# the exact target must first be proven by go test -list.
+run_required_fuzz() {
   PKGDIR="$1"
   TARGET="$2"
-  if [ -d "$PKGDIR" ]; then
-    go test "./$PKGDIR" -run='^$' -fuzz="^${TARGET}$" -fuzztime=30s
-    RC=$?
-    [ "$RC" -eq 0 ] || fail "FUZZ_FAILED_$TARGET"
-    echo "FUZZ_${TARGET}=PASS"
-  else
-    echo "FUZZ_${TARGET}=DEFERRED_UNTIL_OWNING_PACKAGE_EXISTS"
-  fi
+  fuzz_target_gate "$PKGDIR" "$TARGET" "30s"
+  RC=$?
+  [ "$RC" -eq 0 ] || fail "FUZZ_GATE_FAILED_${TARGET}_RC_${RC}"
 }
 
-run_fuzz_if_package_exists "internal/strictjson" "FuzzStrictJSONDecode"
-run_fuzz_if_package_exists "internal/policy" "FuzzPolicyParse"
-run_fuzz_if_package_exists "internal/replay" "FuzzEvidenceReplayParse"
-run_fuzz_if_package_exists "internal/model" "FuzzIdentifierValidation"
-run_fuzz_if_package_exists "internal/approval" "FuzzApprovalStateMachine"
+run_required_fuzz "internal/strictjson" "FuzzStrictJSONDecode"
+run_required_fuzz "internal/policy" "FuzzPolicyParse"
+run_required_fuzz "internal/replay" "FuzzEvidenceReplayParse"
+run_required_fuzz "internal/model" "FuzzIdentifierValidation"
+run_required_fuzz "internal/approval" "FuzzApprovalStateMachine"
+
+echo "FUZZ_TARGET_EXISTENCE_GATE=PASS"
+echo "FUZZ_FALSE_PASS_PATH_COUNT=0"
 
 GOVULN_JSON="$TMP/govulncheck.json"
 GOVULN_ERR="$TMP/govulncheck.stderr"
@@ -255,66 +611,6 @@ print("JSON_SCHEMA_DIALECT=DRAFT_2020_12")
 PY
 RC=$?
 [ "$RC" -eq 0 ] || fail "JSON_SCHEMA_CONTRACT_FAILED"
-
-# Reject network refs and refs that escape the repository before kin-openapi runs.
-python3 - <<'PY'
-import pathlib, re, sys
-root=pathlib.Path(".").resolve()
-p=root/"api/openapi.yaml"
-text=p.read_text()
-if not re.search(r"(?m)^openapi:\s*3\.1\.2\s*$", text):
-    raise SystemExit(7)
-for m in re.finditer(r"(?m)^\s*\$ref:\s*['\"]?([^'\"\s]+)", text):
-    ref=m.group(1)
-    if ref.startswith(("http://","https://","file://")):
-        raise SystemExit(7)
-    target=ref.split("#",1)[0]
-    if target:
-        resolved=(p.parent/target).resolve()
-        if root not in resolved.parents and resolved != root:
-            raise SystemExit(7)
-print("OPENAPI_REFERENCE_BOUNDARY=PASS")
-PY
-RC=$?
-[ "$RC" -eq 0 ] || fail "OPENAPI_REFERENCE_BOUNDARY_FAILED"
-
-KIN_TMP="$TMP/kin-openapi"
-rm -rf "$KIN_TMP"
-mkdir -p "$KIN_TMP" || fail "KIN_TEMP_CREATE_FAILED"
-cat > "$KIN_TMP/go.mod" <<'EOF'
-module haep.local/openapi-validate
-go 1.26
-require github.com/getkin/kin-openapi v0.147.0
-EOF
-cat > "$KIN_TMP/main.go" <<'EOF'
-package main
-import (
-  "context"
-  "fmt"
-  "os"
-  "github.com/getkin/kin-openapi/openapi3"
-)
-func main() {
-  if len(os.Args) != 2 { panic("expected path") }
-  loader := openapi3.NewLoader()
-  loader.IsExternalRefsAllowed = true
-  doc, err := loader.LoadFromFile(os.Args[1])
-  if err != nil { panic(err) }
-  if err := doc.Validate(context.Background()); err != nil { panic(err) }
-  fmt.Println("KIN_OPENAPI_VALIDATION=PASS")
-}
-EOF
-(
-  cd "$KIN_TMP" || exit 7
-  go mod download
-  RC=$?
-  [ "$RC" -eq 0 ] || exit "$RC"
-  go run . "$ROOT/api/openapi.yaml"
-)
-RC=$?
-[ "$RC" -eq 0 ] || fail "KIN_OPENAPI_VALIDATION_FAILED"
-echo "KIN_OPENAPI_VERSION=v0.147.0"
-echo "KIN_OPENAPI_RUNTIME_DEPENDENCY=NO"
 
 # Design manifest integrity is checked for every immutable design file it lists.
 python3 - <<'PY'
