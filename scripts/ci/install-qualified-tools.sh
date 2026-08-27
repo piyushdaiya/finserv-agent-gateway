@@ -105,11 +105,20 @@ chmod 0755 "$BIN/syft"
 
 STATICCHECK_OUT="$("$BIN/staticcheck" -version 2>&1)"
 echo "$STATICCHECK_OUT" | grep -F "$STATICCHECK_VERSION" >/dev/null 2>&1 || fail "STATICCHECK_VERSION_MISMATCH"
-"$GOROOT/bin/go" version -m "$BIN/staticcheck" | grep -F "honnef.co/go/tools $STATICCHECK_MODULE_VERSION" >/dev/null 2>&1 || fail "STATICCHECK_MODULE_BINDING_MISMATCH"
 
-"$GOROOT/bin/go" version -m "$BIN/govulncheck" | grep -F "golang.org/x/vuln $GOVULNCHECK_VERSION" >/dev/null 2>&1 || fail "GOVULNCHECK_MODULE_BINDING_MISMATCH"
+verify_go_module_binding() {
+  BINARY="$1"
+  MODULE="$2"
+  VERSION="$3"
+  "$GOROOT/bin/go" version -m "$BINARY" | awk -v module="$MODULE" -v version="$VERSION" '
+    $1 == "mod" && $2 == module && $3 == version { found=1 }
+    END { exit found ? 0 : 1 }
+  '
+}
 
-"$GOROOT/bin/go" version -m "$BIN/gosec" | grep -F "github.com/securego/gosec/v2 $GOSEC_VERSION" >/dev/null 2>&1 || fail "GOSEC_MODULE_BINDING_MISMATCH"
+verify_go_module_binding "$BIN/staticcheck" "honnef.co/go/tools" "$STATICCHECK_MODULE_VERSION" || fail "STATICCHECK_MODULE_BINDING_MISMATCH"
+verify_go_module_binding "$BIN/govulncheck" "golang.org/x/vuln" "$GOVULNCHECK_VERSION" || fail "GOVULNCHECK_MODULE_BINDING_MISMATCH"
+verify_go_module_binding "$BIN/gosec" "github.com/securego/gosec/v2" "$GOSEC_VERSION" || fail "GOSEC_MODULE_BINDING_MISMATCH"
 
 GITLEAKS_OUT="$("$BIN/gitleaks" version 2>&1)"
 echo "$GITLEAKS_OUT" | grep -F "8.30.1" >/dev/null 2>&1 || fail "GITLEAKS_VERSION_MISMATCH"
