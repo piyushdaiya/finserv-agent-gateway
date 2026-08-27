@@ -1,0 +1,105 @@
+name: p1-security-baseline
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p1-security-baseline:
+    name: p1-security-baseline
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      HAEP_EXPECTED_REPOSITORY: piyushdaiya/finserv-agent-gateway
+      HAEP_WORKDIR: ${{ github.workspace }}/finserv-agent-gateway
+    steps:
+      - name: Bind trusted source context and acquire exact source
+        env:
+          HAEP_EVENT_NAME: ${{ github.event_name }}
+          HAEP_REPOSITORY: ${{ github.repository }}
+          HAEP_SHA: ${{ github.sha }}
+          HAEP_PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          HAEP_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HAEP_PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HAEP_GITHUB_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          rc=0
+          expected_repository="$HAEP_EXPECTED_REPOSITORY"
+          case "$HAEP_EVENT_NAME" in
+            pull_request)
+              expected_head="$HAEP_PR_HEAD_SHA"
+              expected_base="$HAEP_PR_BASE_SHA"
+              [ "$HAEP_PR_HEAD_REPO" = "$expected_repository" ] || rc=7
+              ;;
+            push|workflow_dispatch)
+              expected_head="$HAEP_SHA"
+              expected_base=""
+              ;;
+            *)
+              rc=7
+              ;;
+          esac
+          [ "$HAEP_REPOSITORY" = "$expected_repository" ] || rc=7
+          printf '%s\n' "$expected_head" | grep -Eq '^[0-9a-f]{40}$' || rc=7
+          if [ -n "$expected_base" ]; then
+            printf '%s\n' "$expected_base" | grep -Eq '^[0-9a-f]{40}$' || rc=7
+          fi
+          if [ "$rc" -ne 0 ]; then
+            echo "SOURCE_CONTEXT_BINDING=FAIL"
+            exit "$rc"
+          fi
+
+          rm -rf "$HAEP_WORKDIR"
+          mkdir -p "$HAEP_WORKDIR"
+          cd "$HAEP_WORKDIR" || exit 7
+          git init -q || exit 7
+          git remote add origin "https://github.com/piyushdaiya/finserv-agent-gateway.git" || exit 7
+
+          auth="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$HAEP_GITHUB_TOKEN" | base64 | tr -d '\n')"
+          git -c "http.https://github.com/.extraheader=$auth" fetch --quiet --no-tags --depth=1 origin "$expected_head" || exit 7
+          fetched="$(git rev-parse FETCH_HEAD 2>/dev/null)"
+          [ "$fetched" = "$expected_head" ] || {
+            echo "SOURCE_FETCH_BINDING=FAIL"
+            exit 7
+          }
+          git checkout --quiet --detach "$expected_head" || exit 7
+          [ "$(git rev-parse HEAD)" = "$expected_head" ] || exit 7
+
+          if [ -n "$expected_base" ]; then
+            git -c "http.https://github.com/.extraheader=$auth" fetch --quiet --no-tags --depth=1 origin "$expected_base" || exit 7
+            git cat-file -e "$expected_base^{commit}" || exit 7
+          fi
+
+          unset auth HAEP_GITHUB_TOKEN
+          echo "HAEP_EXPECTED_HEAD_SHA=$expected_head" >> "$GITHUB_ENV"
+          echo "HAEP_EXPECTED_BASE_SHA=$expected_base" >> "$GITHUB_ENV"
+          echo "HAEP_BOUND_REPOSITORY=$expected_repository" >> "$GITHUB_ENV"
+          echo "SOURCE_CONTEXT_BINDING=PASS"
+
+      - name: Revalidate exact source with frozen local bootstrap script
+        shell: bash
+        working-directory: ${{ env.HAEP_WORKDIR }}
+        run: /bin/bash ./scripts/ci/bootstrap-source.sh
+
+      - name: Install exact qualified tools
+        shell: bash
+        working-directory: ${{ env.HAEP_WORKDIR }}
+        run: /bin/bash ./scripts/ci/install-qualified-tools.sh
+
+      - name: Run fail-closed security baseline
+        shell: bash
+        working-directory: ${{ env.HAEP_WORKDIR }}
+        run: /bin/bash ./scripts/ci/run-security-baseline.sh
